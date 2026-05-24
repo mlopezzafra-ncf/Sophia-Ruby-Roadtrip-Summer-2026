@@ -169,12 +169,143 @@
     gap:22px 18px;
   }
   .parks-grid .park-poster{flex:0 1 220px;max-width:240px}
-  .park-poster{cursor:default;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;flex-direction:column}
+  .park-poster{cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;flex-direction:column;position:relative}
   .park-poster:hover{transform:translateY(-4px)}
+  .park-poster:focus{outline:3px solid var(--gold);outline-offset:4px}
+  .park-poster .poster-wrap{position:relative;overflow:hidden}
+  .park-poster .park-hint{
+    position:absolute;inset:auto 0 0 0;
+    background:linear-gradient(180deg, transparent 0%, rgba(26,58,79,.85) 100%);
+    color:var(--gold);font-family:'Alfa Slab One';font-size:11px;letter-spacing:.15em;
+    text-align:center;padding:18px 8px 10px;opacity:0;transition:opacity .25s;
+    pointer-events:none;
+  }
+  .park-poster:hover .park-hint, .park-poster:focus .park-hint{opacity:1}
   .park-badge{
     display:inline-block;background:var(--gold);color:var(--navy);
     font-family:'Alfa Slab One';font-size:9px;padding:3px 9px;
     letter-spacing:.1em;margin-top:6px;
+  }
+
+  /* PARK MODAL */
+  .park-modal{
+    position:fixed;inset:0;z-index:2000;
+    display:none;align-items:flex-start;justify-content:center;
+    background:rgba(26,24,16,.78);
+    padding:32px 16px;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .park-modal.open{display:flex;animation:pmFade .25s ease}
+  @keyframes pmFade{from{opacity:0}to{opacity:1}}
+  .park-modal-card{
+    background:var(--paper-light);
+    border:14px solid transparent;
+    border-image:linear-gradient(135deg, var(--wood-light) 0%, var(--wood) 40%, var(--wood-dark) 60%, var(--wood) 100%) 1;
+    box-shadow:var(--shadow-lg);
+    max-width:980px;width:100%;
+    position:relative;
+    animation:pmRise .35s cubic-bezier(.2,.9,.3,1.1);
+  }
+  @keyframes pmRise{from{transform:translateY(20px) scale(.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  .park-modal-close{
+    position:absolute;top:-18px;right:-18px;z-index:3;
+    width:44px;height:44px;border-radius:50%;
+    background:var(--rust);color:var(--paper);
+    border:3px solid var(--paper);
+    font-family:'Alfa Slab One';font-size:22px;line-height:1;
+    cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.35);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .park-modal-close:hover{background:#A43821}
+  .park-modal-header{
+    display:grid;grid-template-columns:220px 1fr;gap:24px;
+    padding:28px 32px 20px;background:var(--paper-light);
+    border-bottom:3px dashed var(--wood);
+  }
+  .park-modal-poster{
+    width:100%;border:6px solid transparent;
+    border-image:linear-gradient(135deg, var(--wood-light), var(--wood-dark)) 1;
+    box-shadow:var(--shadow);display:block;
+  }
+  .park-modal-titlebox .pm-kicker{
+    font-family:'Caveat';font-size:24px;color:var(--rust);
+    line-height:1;margin-bottom:4px;display:block;
+  }
+  .park-modal-titlebox h2{
+    font-family:'Alfa Slab One';font-weight:normal;
+    font-size:clamp(28px,4vw,44px);color:var(--navy);
+    letter-spacing:.02em;line-height:1;
+    text-shadow:2px 2px 0 var(--gold);
+    margin-bottom:14px;
+  }
+  .park-modal-facts{
+    display:flex;flex-wrap:wrap;gap:8px 10px;margin-bottom:14px;
+  }
+  .pm-fact{
+    background:var(--paper);border:1.5px solid var(--wood);
+    padding:6px 12px;font-size:12px;color:var(--ink-soft);
+    font-weight:600;letter-spacing:.03em;
+  }
+  .pm-fact strong{color:var(--rust);font-weight:700}
+  .park-modal-link{
+    display:inline-block;background:var(--forest);color:var(--paper);
+    padding:9px 18px;font-family:'Alfa Slab One';font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+    border:2px solid var(--gold);transition:all .2s;
+  }
+  .park-modal-link:hover{background:var(--pine);transform:translateY(-1px)}
+  .park-modal-body{padding:24px 32px 32px}
+  .pm-section-title{
+    font-family:'Alfa Slab One';font-size:14px;font-weight:normal;
+    color:var(--rust);letter-spacing:.1em;text-transform:uppercase;
+    margin-top:22px;margin-bottom:12px;border-bottom:2px solid var(--gold);
+    padding-bottom:6px;display:flex;align-items:center;gap:8px;
+  }
+  .pm-section-title:first-child{margin-top:0}
+  .pm-section-title::before{
+    content:'';display:inline-block;width:8px;height:8px;
+    background:var(--rust);border-radius:50%;
+  }
+  .pm-history{
+    font-size:15px;line-height:1.6;color:var(--ink);
+    background:var(--paper);border-left:4px solid var(--gold);
+    padding:14px 18px;
+  }
+  .pm-history em{color:var(--rust);font-style:italic}
+  .pm-routes{display:grid;gap:10px}
+  .pm-route{
+    background:var(--paper);border:1.5px solid var(--wood);
+    padding:12px 16px;
+  }
+  .pm-route .rn{
+    font-family:'Alfa Slab One';font-size:13px;color:var(--navy);
+    letter-spacing:.03em;display:block;margin-bottom:4px;
+  }
+  .pm-route .rd{font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+  .pm-things{display:grid;gap:10px}
+  .pm-thing{
+    background:var(--paper);border-left:4px solid var(--forest);
+    padding:12px 14px;font-size:14px;line-height:1.5;
+  }
+  .pm-thing .tag{
+    display:inline-block;font-family:'Alfa Slab One';font-size:10px;
+    color:var(--forest);letter-spacing:.15em;text-transform:uppercase;
+    margin-right:8px;
+  }
+  .pm-thing strong{color:var(--rust)}
+  body.park-modal-open{overflow:hidden}
+
+  @media (max-width:680px){
+    .park-modal{padding:16px 8px}
+    .park-modal-card{border-width:8px}
+    .park-modal-close{top:-14px;right:-10px;width:38px;height:38px;font-size:18px}
+    .park-modal-header{grid-template-columns:1fr;gap:16px;padding:20px 18px 16px}
+    .park-modal-poster{max-width:200px;margin:0 auto}
+    .park-modal-body{padding:18px 18px 24px}
+    .park-modal-titlebox h2{font-size:28px;text-align:center}
+    .park-modal-titlebox .pm-kicker{text-align:center}
+    .park-modal-facts{justify-content:center}
+    .park-modal-link{display:block;text-align:center}
   }
 
   /* DAYS */
@@ -711,9 +842,16 @@
   </div>
 </section>
 
+<div class="park-modal" id="parkModal" role="dialog" aria-modal="true" aria-labelledby="parkModalTitle" onclick="closeParkModal(event)">
+  <div class="park-modal-card" onclick="event.stopPropagation()">
+    <button class="park-modal-close" type="button" aria-label="Close" onclick="closeParkModal()">×</button>
+    <div id="parkModalContent"></div>
+  </div>
+</div>
+
 <footer>
   <div class="script">Go slow, take pictures, stay weird.</div>
-  <div class="msg">Love, Dad · Made with care for Sophia &amp; Ruby, May 2026</div>
+  <div class="msg">Love, Papa · Made with care for Sophia &amp; Ruby, May 2026</div>
   <div class="export">
     <button onclick="exportData()">⬇ Export Trip Data</button>
     <button onclick="importData()">⬆ Import Trip Data</button>
@@ -782,11 +920,100 @@ const STATES = [
 
 const PARK_IMG = (f) => { const key = f.replace(/\.(png|jpg|jpeg)$/i, ''); return IMG[key] || encodeURI('National Parks/' + f); };
 const NATIONAL_PARKS = [
-  {name:'BADLANDS',       state:'South Dakota', days:'Day 5',       detail:'Notch Trail · Loop Road',         onTrip:true,  img:PARK_IMG('Badlands.png')},
-  {name:'ZION',           state:'Utah',         days:'Days 10–11',  detail:'The Narrows · Angels Landing',    onTrip:true,  img:PARK_IMG('Zion.png')},
-  {name:'YELLOWSTONE',    state:'Wyoming',      days:'Inspiration', detail:'Old Faithful · The first NP',     onTrip:false, img:PARK_IMG('Yellowstone.png')},
-  {name:'GRAND CANYON',   state:'Arizona',      days:'Inspiration', detail:'South Rim · A mile deep',         onTrip:false, img:PARK_IMG('Grand Canyon.png')},
-  {name:'LASSEN VOLCANIC',state:'California',   days:'Inspiration', detail:'Lassen Peak · Hot springs',       onTrip:false, img:PARK_IMG('Lassen Volcanic.png')},
+  {name:'BADLANDS',       state:'South Dakota', days:'Day 5',       detail:'Notch Trail · Loop Road',         onTrip:true,  img:PARK_IMG('Badlands.png'),
+    info:{
+      established:'1978 (Monument since 1939)',
+      area:'244,000 acres',
+      link:'https://www.nps.gov/badl/',
+      history:'The Lakota called it <em>mako sica</em> — "land bad" — for its labyrinth of spires and dry washes. The terrain is one of the world\'s richest fossil beds, full of saber-toothed cats, ancient horses, and three-toed camels from 35 million years ago. The park protects the largest mixed-grass prairie left in the U.S., where reintroduced bison, bighorn sheep, and black-footed ferrets now roam.',
+      routes:[
+        {name:'Badlands Loop Road (SD-240)', detail:'39 miles, ~1.5 hrs without stops. Sixteen overlooks — Big Badlands, Pinnacles, Yellow Mounds. Do it at sunrise OR sunset; the rocks change color by the minute.'},
+        {name:'Sage Creek Rim Road', detail:'Gravel, often overlooked. Bison herds, prairie dog towns, and dark-sky stargazing at Sage Creek Campground.'}
+      ],
+      things:[
+        {tag:'HIKE', text:'<strong>Notch Trail</strong> — 1.5 mi RT, climb a log ladder, end at a canyon edge with prairie views forever.'},
+        {tag:'HIKE', text:'<strong>Door + Window Trails</strong> — both under a mile, easy, slot you straight into the Badlands wall.'},
+        {tag:'VIEW', text:'<strong>Pinnacles Overlook at sunset</strong> — the whole formation glows pink then violet.'},
+        {tag:'WILD', text:'<strong>Roberts Prairie Dog Town</strong> — a few hundred prairie dogs and the occasional burrowing owl.'},
+        {tag:'STARS', text:'Badlands is a designated Dark Sky park — astronomy programs run nightly in summer at the Cedar Pass Amphitheater.'}
+      ]
+    }},
+  {name:'ZION',           state:'Utah',         days:'Days 10–11',  detail:'The Narrows · Angels Landing',    onTrip:true,  img:PARK_IMG('Zion.png'),
+    info:{
+      established:'1919 (Mukuntuweap Monument, 1909)',
+      area:'147,000 acres',
+      link:'https://www.nps.gov/zion/',
+      history:'The Anasazi farmed the canyon floor a thousand years ago; the Southern Paiute named it <em>Mukuntuweap</em> ("straight canyon"). Mormon pioneer Isaac Behunin homesteaded here in the 1860s and renamed it Zion — "place of peace." The Virgin River, only a foot deep most of the year, carved this 2,000-foot-deep sandstone canyon over millions of years and is still cutting deeper.',
+      routes:[
+        {name:'Zion Canyon Scenic Drive', detail:'6 miles up the main canyon. <strong>Shuttle only Mar–Nov</strong> — cars not allowed. Hop on/off at nine stops; the Temple of Sinawava is the end of the line.'},
+        {name:'Zion–Mt Carmel Highway (UT-9)', detail:'The east entrance. Hairpin switchbacks climb out of the canyon and dive through a 1.1-mile sandstone tunnel blasted in 1930. Pull off at the Canyon Overlook trailhead.'},
+        {name:'Kolob Canyons (I-15 exit 40)', detail:'A separate, quieter section in the park\'s northwest corner. Red rock fingers, no crowds.'}
+      ],
+      things:[
+        {tag:'HIKE', text:'<strong>Angels Landing</strong> — 5.4 mi RT, 1,500 ft up, with chains on the final spine. Permit required (lottery). Not for vertigo.'},
+        {tag:'HIKE', text:'<strong>The Narrows</strong> — wade upstream in the Virgin River through a 1,000-ft-deep slot. Rent canyoneering boots + dry pants in Springdale.'},
+        {tag:'EASY', text:'<strong>Canyon Overlook Trail</strong> — 1 mi RT, mild, ends at a jaw-dropper above Pine Creek Canyon.'},
+        {tag:'EASY', text:'<strong>Emerald Pools</strong> — short waterfall hikes, family-friendly, good in afternoon shade.'},
+        {tag:'EPIC', text:'<strong>Observation Point</strong> via East Mesa — 7 mi RT, looks straight DOWN onto Angels Landing.'}
+      ]
+    }},
+  {name:'YELLOWSTONE',    state:'Wyoming',      days:'Inspiration', detail:'Old Faithful · The first NP',     onTrip:false, img:PARK_IMG('Yellowstone.png'),
+    info:{
+      established:'March 1, 1872 — the world\'s first',
+      area:'2.2 million acres',
+      link:'https://www.nps.gov/yell/',
+      history:'Signed into law by Ulysses S. Grant, Yellowstone invented the idea of a national park — every park on Earth is descended from it. The Shoshone, Crow, Bannock, and Blackfeet hunted and gathered here for over 11,000 years. The whole park sits inside the caldera of an active supervolcano; its last major eruption was 631,000 years ago, and the magma chamber still powers half the world\'s geysers.',
+      routes:[
+        {name:'Grand Loop Road', detail:'A 142-mile figure-eight that connects every major sight. Plan 3–5 days; you cannot do it in one.'},
+        {name:'Upper Loop (~70 mi)', detail:'Mammoth Hot Springs, Tower Fall, Lamar Valley — the wildlife half. Wolves at dawn.'},
+        {name:'Lower Loop (~96 mi)', detail:'Old Faithful, Grand Prismatic, Yellowstone Lake, the Grand Canyon of the Yellowstone — the geology half.'}
+      ],
+      things:[
+        {tag:'GEYSER', text:'<strong>Old Faithful</strong> — erupts every ~90 min, 100–180 ft. Check the next-eruption board at the visitor center.'},
+        {tag:'COLOR', text:'<strong>Grand Prismatic Spring</strong> — the rainbow hot spring. Hike up to the overlook trail for the famous aerial view.'},
+        {tag:'WILD', text:'<strong>Lamar Valley at dawn</strong> — wolves, bison herds, grizzlies. Bring binoculars; it\'s called the American Serengeti.'},
+        {tag:'CHASM', text:'<strong>Grand Canyon of the Yellowstone</strong> — Artist Point view of the 308-ft Lower Falls. The yellow stone the park was named for.'},
+        {tag:'EASY', text:'<strong>Mammoth Hot Springs boardwalks</strong> — terraced travertine that looks like a frozen waterfall.'}
+      ]
+    }},
+  {name:'GRAND CANYON',   state:'Arizona',      days:'Inspiration', detail:'South Rim · A mile deep',         onTrip:false, img:PARK_IMG('Grand Canyon.png'),
+    info:{
+      established:'1919',
+      area:'1.2 million acres',
+      link:'https://www.nps.gov/grca/',
+      history:'Theodore Roosevelt stood on the South Rim in 1903 and said: "Leave it as it is. The ages have been at work on it, and man can only mar it." Sixteen years later it became a national park. The Colorado River carved the canyon over 5–6 million years; the schist at the bottom is 1.8 billion years old — nearly half the age of the Earth. Eleven tribes — including the Havasupai, who still live within the canyon — consider it sacred ground.',
+      routes:[
+        {name:'Hermit Road (West Rim Drive)', detail:'7 miles, shuttle-only Mar–Nov. Eight viewpoints including Hopi, Mohave, Pima, and the unbeatable Hermits Rest at sunset.'},
+        {name:'Desert View Drive (East)', detail:'25 miles to the Desert View Watchtower. Cars allowed year-round. Stop at Grandview, Moran Point, Lipan Point.'},
+        {name:'North Rim', detail:'1,000 ft higher, 220 driving miles from the South Rim, 10° cooler. Closed mid-Oct to mid-May. Quieter, greener, fewer tourists.'}
+      ],
+      things:[
+        {tag:'VIEW', text:'<strong>Mather Point at sunrise</strong> — the classic first-time view. Get there before dawn.'},
+        {tag:'WALK', text:'<strong>Rim Trail</strong> — 13 mi total, mostly flat, paved in places. Walk any chunk between shuttle stops.'},
+        {tag:'HIKE', text:'<strong>Bright Angel Trail</strong> — down to 1.5-Mile Resthouse or Plateau Point (12 mi RT, serious). Carry water; the canyon is brutal in summer.'},
+        {tag:'HIKE', text:'<strong>South Kaibab Trail to Ooh Aah Point</strong> — 1.8 mi RT, the best view-for-effort hike on the South Rim.'},
+        {tag:'TOWER', text:'<strong>Desert View Watchtower</strong> — Mary Colter\'s 1932 stone tower at the east end. Painted interior by Hopi artist Fred Kabotie.'}
+      ]
+    }},
+  {name:'LASSEN VOLCANIC',state:'California',   days:'Inspiration', detail:'Lassen Peak · Hot springs',       onTrip:false, img:PARK_IMG('Lassen Volcanic.png'),
+    info:{
+      established:'1916',
+      area:'106,000 acres',
+      link:'https://www.nps.gov/lavo/',
+      history:'Lassen Peak is one of the largest plug-dome volcanoes on Earth. It erupted spectacularly from 1914 to 1917 — photographed in detail by B.F. Loomis, whose images helped birth modern volcanology. It sits at the southern end of the Cascade Range, where all four types of volcano on the planet (plug dome, shield, cinder cone, composite) appear within a single park. Native Atsugewi, Yana, Yahi, and Maidu people gathered seasonally around the hot springs for thousands of years.',
+      routes:[
+        {name:'Lassen Volcanic National Park Highway (CA-89)', detail:'30 miles through the heart of the park. Climbs to 8,512 ft at the Lassen Peak trailhead. <strong>Closed by snow Nov–June</strong> — check before you go.'},
+        {name:'Butte Lake Road (northeast)', detail:'Unpaved spur to Cinder Cone and the Painted Dunes. Quieter, harder to reach.'},
+        {name:'Warner Valley Road (south)', detail:'Backdoor to Boiling Springs Lake and the Devils Kitchen geothermal area.'}
+      ],
+      things:[
+        {tag:'PEAK', text:'<strong>Lassen Peak Trail</strong> — 5 mi RT, 2,000 ft up, summit a volcano. Snow on top into July.'},
+        {tag:'WEIRD', text:'<strong>Bumpass Hell</strong> — 3 mi RT boardwalk through bubbling mud pots, fumaroles, and a turquoise sulfur pool. The park\'s loudest, smelliest, best stop.'},
+        {tag:'FALLS', text:'<strong>Kings Creek Falls</strong> — 2.5 mi RT, 30-ft cascade through pines.'},
+        {tag:'COLOR', text:'<strong>Cinder Cone + Painted Dunes</strong> — climb a 700-ft pile of black scoria, look down on red-and-orange oxidized ash drifts.'},
+        {tag:'EASY', text:'<strong>Manzanita Lake</strong> — 1.5 mi loop with a perfect mirror reflection of Lassen Peak.'}
+      ]
+    }},
 ];
 
 const PLANNED = {food:682, gas:568, lodging:767.70, activities:100, misc:76};
@@ -1012,18 +1239,74 @@ function initStates(){
 
 function initParks(){
   const grid = document.getElementById('parksGrid');
-  NATIONAL_PARKS.forEach(p => {
+  NATIONAL_PARKS.forEach((p, idx) => {
     const el = document.createElement('div');
     el.className = 'park-poster reveal';
-    el.innerHTML = '<div class="poster-wrap"><img src="'+p.img+'" alt="'+escapeHTML(p.name)+' National Park poster" loading="lazy"></div>'+
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','Open info about '+p.name+' National Park');
+    el.innerHTML = '<div class="poster-wrap"><img src="'+p.img+'" alt="'+escapeHTML(p.name)+' National Park poster" loading="lazy"><div class="park-hint">↗ Tap for park info</div></div>'+
       '<div class="poster-caption">'+
         '<span class="pc-title">'+escapeHTML(p.name)+'</span>'+
         '<span class="pc-tagline">'+escapeHTML(p.state)+'</span>'+
         '<span class="pc-detail">'+escapeHTML(p.detail)+'</span>'+
         (p.onTrip ? '<div class="park-badge">★ ON THE TRIP · '+escapeHTML(p.days)+'</div>' : '')+
       '</div>';
+    el.addEventListener('click', () => openParkModal(idx));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openParkModal(idx); }
+    });
     grid.appendChild(el);
   });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeParkModal();
+  });
+}
+
+function openParkModal(idx){
+  const p = NATIONAL_PARKS[idx];
+  if (!p || !p.info) return;
+  const i = p.info;
+  const factChips = [
+    i.established ? '<span class="pm-fact"><strong>Established</strong> · '+escapeHTML(i.established)+'</span>' : '',
+    i.area        ? '<span class="pm-fact"><strong>Area</strong> · '+escapeHTML(i.area)+'</span>' : '',
+    '<span class="pm-fact"><strong>State</strong> · '+escapeHTML(p.state)+'</span>',
+    p.onTrip      ? '<span class="pm-fact" style="background:var(--gold);color:var(--navy);border-color:var(--gold-deep)"><strong>★ On the trip</strong> · '+escapeHTML(p.days)+'</span>' : ''
+  ].join('');
+  const routes = (i.routes||[]).map(r => '<div class="pm-route"><span class="rn">'+escapeHTML(r.name)+'</span><span class="rd">'+r.detail+'</span></div>').join('');
+  const things = (i.things||[]).map(t => '<div class="pm-thing"><span class="tag">'+escapeHTML(t.tag)+'</span>'+t.text+'</div>').join('');
+  document.getElementById('parkModalContent').innerHTML =
+    '<div class="park-modal-header">'+
+      '<img class="park-modal-poster" src="'+p.img+'" alt="'+escapeHTML(p.name)+' poster">'+
+      '<div class="park-modal-titlebox">'+
+        '<span class="pm-kicker">America\'s Best Idea</span>'+
+        '<h2 id="parkModalTitle">'+escapeHTML(p.name)+'</h2>'+
+        '<div class="park-modal-facts">'+factChips+'</div>'+
+        (i.link ? '<a class="park-modal-link" href="'+i.link+'" target="_blank" rel="noopener">Official NPS page ↗</a>' : '')+
+      '</div>'+
+    '</div>'+
+    '<div class="park-modal-body">'+
+      '<h3 class="pm-section-title">A bit of history</h3>'+
+      '<div class="pm-history">'+i.history+'</div>'+
+      '<h3 class="pm-section-title">Good routes</h3>'+
+      '<div class="pm-routes">'+routes+'</div>'+
+      '<h3 class="pm-section-title">Things to do</h3>'+
+      '<div class="pm-things">'+things+'</div>'+
+    '</div>';
+  const modal = document.getElementById('parkModal');
+  modal.classList.add('open');
+  document.body.classList.add('park-modal-open');
+  modal.scrollTop = 0;
+  const closeBtn = modal.querySelector('.park-modal-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeParkModal(event){
+  if (event && event.target && event.target.id !== 'parkModal' && event.type === 'click') return;
+  const modal = document.getElementById('parkModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.classList.remove('park-modal-open');
 }
 
 function initReading(){
@@ -1377,78 +1660,6 @@ function initExportImport(){
   });
 }
 function importData(){ document.getElementById('importFile').click(); }
-</script>
-
-<!-- PASSWORD GATE -->
-<script>
-(function(){
-  const CORRECT = 'Sophia#2026';
-  const KEY = 'rt2026_auth';
-
-  function unlock() {
-    document.getElementById('pw-gate').style.display = 'none';
-    document.getElementById('pw-gate-style').remove();
-  }
-
-  if (sessionStorage.getItem(KEY) === '1') { return; }
-
-  const style = document.createElement('style');
-  style.id = 'pw-gate-style';
-  style.textContent = 'body > *:not(#pw-gate){ display:none !important; }';
-  document.head.appendChild(style);
-
-  const gate = document.createElement('div');
-  gate.id = 'pw-gate';
-  gate.innerHTML = `
-    <div class="pg-bg"></div>
-    <div class="pg-card">
-      <div class="pg-icon">🗺️</div>
-      <h1 class="pg-title">Sophia &amp; Ruby<br>Road Trip 2026</h1>
-      <p class="pg-sub">Enter the password to continue</p>
-      <div class="pg-field">
-        <input id="pg-input" type="password" placeholder="Password" autocomplete="current-password" />
-        <button id="pg-btn">Go &rarr;</button>
-      </div>
-      <p id="pg-err" class="pg-err"></p>
-    </div>
-  `;
-
-  const s = document.createElement('style');
-  s.textContent = `
-    #pw-gate { position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif; }
-    #pw-gate .pg-bg { position:absolute;inset:0;background:linear-gradient(160deg,#1A3A4F 0%,#2D5A3D 50%,#C34A2C 100%);background-size:400% 400%;animation:pgShift 8s ease infinite; }
-    @keyframes pgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    #pw-gate .pg-card { position:relative;z-index:1;background:rgba(245,230,200,.97);border:3px solid #E8B44C;border-radius:16px;padding:48px 40px 40px;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4); }
-    #pw-gate .pg-icon { font-size:52px;margin-bottom:12px;display:block; }
-    #pw-gate .pg-title { font-family:'Alfa Slab One',serif;font-size:24px;color:#1A3A4F;letter-spacing:.02em;margin-bottom:10px;line-height:1.3; }
-    #pw-gate .pg-sub { color:#4A3020;font-size:14px;margin-bottom:24px; }
-    #pw-gate .pg-field { display:flex;gap:8px; }
-    #pw-gate #pg-input { flex:1;padding:12px 16px;border:2px solid #C88830;border-radius:8px;font-size:16px;font-family:'Outfit',sans-serif;background:#fff;color:#2A1810;outline:none;transition:border-color .2s; }
-    #pw-gate #pg-input:focus { border-color:#1A3A4F; }
-    #pw-gate #pg-btn { padding:12px 18px;background:#C34A2C;color:#fff;border:none;border-radius:8px;font-family:'Alfa Slab One',serif;font-size:15px;cursor:pointer;transition:background .2s;white-space:nowrap; }
-    #pw-gate #pg-btn:hover { background:#1A3A4F; }
-    #pw-gate .pg-err { color:#C34A2C;font-size:13px;margin-top:12px;min-height:18px; }
-  `;
-  document.head.appendChild(s);
-  document.body.appendChild(gate);
-
-  function tryUnlock() {
-    const val = document.getElementById('pg-input').value;
-    if (val === CORRECT) {
-      sessionStorage.setItem(KEY, '1');
-      unlock();
-    } else {
-      document.getElementById('pg-err').textContent = 'Incorrect password. Try again.';
-      document.getElementById('pg-input').value = '';
-      document.getElementById('pg-input').focus();
-    }
-  }
-
-  document.getElementById('pg-btn').addEventListener('click', tryUnlock);
-  document.getElementById('pg-input').addEventListener('keydown', function(e){
-    if (e.key === 'Enter') tryUnlock();
-  });
-})();
 </script>
 </body>
 </html>

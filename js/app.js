@@ -37,13 +37,32 @@ function initStates(){
   STATES.forEach(s => {
     const el = document.createElement('div');
     el.className = 'state-poster reveal';
-    const album = s.album ? `
+    const album = s.album ? (() => {
+      const a = s.album;
+      const albumQ  = encodeURIComponent(`${a.title} ${a.artist}`);
+      const artistQ = encodeURIComponent(a.artist);
+      const spotifyAlbum  = a.spotify       || `https://open.spotify.com/search/${albumQ}`;
+      const appleAlbum    = a.apple         || `https://music.apple.com/us/search?term=${albumQ}`;
+      const spotifyArtist = a.spotifyArtist || `https://open.spotify.com/search/${artistQ}/artists`;
+      const appleArtist   = a.appleArtist   || `https://music.apple.com/us/search?term=${artistQ}`;
+      return `
       <div class="state-album">
-        <div class="album-label">♪ ${escapeHTML(String(s.album.year))} · ALBUM</div>
-        <div class="album-title">${escapeHTML(s.album.title)}</div>
-        <div class="album-artist">${escapeHTML(s.album.artist)}</div>
-        <div class="album-note">${escapeHTML(s.album.note)}</div>
-      </div>` : '';
+        <div class="album-label">♪ ${escapeHTML(String(a.year))} · ALBUM</div>
+        <div class="album-title">${escapeHTML(a.title)}</div>
+        <div class="album-artist">${escapeHTML(a.artist)}</div>
+        <div class="album-note">${escapeHTML(a.note)}</div>
+        <div class="album-links">
+          <span class="al-row-label">Album</span>
+          <a class="al-spotify" href="${spotifyAlbum}" target="_blank" rel="noopener" aria-label="Listen to ${escapeHTML(a.title)} on Spotify">Spotify ↗</a>
+          <a class="al-apple"   href="${appleAlbum}"   target="_blank" rel="noopener" aria-label="Listen to ${escapeHTML(a.title)} on Apple Music">Apple Music ↗</a>
+        </div>
+        <div class="album-links">
+          <span class="al-row-label">Artist</span>
+          <a class="al-spotify" href="${spotifyArtist}" target="_blank" rel="noopener" aria-label="${escapeHTML(a.artist)} on Spotify">Spotify ↗</a>
+          <a class="al-apple"   href="${appleArtist}"   target="_blank" rel="noopener" aria-label="${escapeHTML(a.artist)} on Apple Music">Apple Music ↗</a>
+        </div>
+      </div>`;
+    })() : '';
     el.innerHTML = `
       <div class="poster-wrap">
         <img src="${s.img}" alt="${escapeHTML(s.name)} vintage travel poster" loading="lazy">

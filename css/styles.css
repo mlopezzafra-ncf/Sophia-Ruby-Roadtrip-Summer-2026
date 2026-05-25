@@ -834,3 +834,25 @@
   .home-tile .ht-title{font-family:'Alfa Slab One';font-weight:normal;font-size:22px;color:var(--navy);letter-spacing:.02em;line-height:1.1}
   .home-tile .ht-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.5}
   .home-tile .ht-arrow{font-family:'Alfa Slab One';color:var(--gold-deep);margin-top:auto;font-size:14px;letter-spacing:.08em}
+
+  /* Album streaming links (Spotify + Apple Music) */
+  .album-links{
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    margin-top:8px;
+  }
+  .album-links + .album-links{margin-top:4px}
+  .al-row-label{
+    font-family:'Alfa Slab One';font-size:8px;
+    color:var(--ink-soft);letter-spacing:.12em;text-transform:uppercase;
+    min-width:42px;
+  }
+  .album-links a{
+    display:inline-flex;align-items:center;gap:4px;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:9.5px;
+    padding:4px 9px;letter-spacing:.05em;text-transform:uppercase;
+    text-decoration:none;border-radius:3px;
+    transition:transform .15s ease, filter .15s ease;
+  }
+  .album-links a:hover{transform:translateY(-1px);filter:brightness(1.1)}
+  .al-spotify{background:#1DB954;color:#fff}
+  .al-apple{background:linear-gradient(135deg,#FA233B 0%,#FB5C74 100%);color:#fff}

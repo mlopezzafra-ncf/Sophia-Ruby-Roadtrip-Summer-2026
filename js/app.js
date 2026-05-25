@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStates();
   initParks();
   initReading();
+  initListening();
   initDays();
   initMap();
   initBudget();
@@ -34,9 +35,6 @@ function initCountdown(){
 function initStates(){
   const grid = document.getElementById('statesGrid');
   if (!grid) return;
-  // SVG brand marks (Simple Icons — CC0)
-  const ICON_SPOTIFY = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12C24 5.4 18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/></svg>';
-  const ICON_APPLE   = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.5 0 8.5 1.6v11.6c-.4-.2-.9-.3-1.4-.3a3.3 3.3 0 1 0 3.3 3.3V4.6l4.7-.9v6.7c-.4-.2-.9-.3-1.4-.3a3.3 3.3 0 1 0 3.3 3.3V0zm0 0"/></svg>';
   STATES.forEach(s => {
     const el = document.createElement('div');
     el.className = 'state-poster reveal';
@@ -56,13 +54,13 @@ function initStates(){
         <div class="album-note">${escapeHTML(a.note)}</div>
         <div class="album-links">
           <span class="al-row-label">Album</span>
-          <a class="al-spotify" href="${spotifyAlbum}" target="_blank" rel="noopener" title="Listen to ${escapeHTML(a.title)} on Spotify" aria-label="Listen to ${escapeHTML(a.title)} on Spotify">${ICON_SPOTIFY}</a>
-          <a class="al-apple"   href="${appleAlbum}"   target="_blank" rel="noopener" title="Listen to ${escapeHTML(a.title)} on Apple Music" aria-label="Listen to ${escapeHTML(a.title)} on Apple Music">${ICON_APPLE}</a>
+          <a class="al-spotify" href="${spotifyAlbum}" target="_blank" rel="noopener" title="Listen to ${escapeHTML(a.title)} on Spotify" aria-label="Listen to ${escapeHTML(a.title)} on Spotify">${ICON_SPOTIFY_HTML}</a>
+          <a class="al-apple"   href="${appleAlbum}"   target="_blank" rel="noopener" title="Listen to ${escapeHTML(a.title)} on Apple Music" aria-label="Listen to ${escapeHTML(a.title)} on Apple Music">${ICON_APPLE_HTML}</a>
         </div>
         <div class="album-links">
           <span class="al-row-label">Artist</span>
-          <a class="al-spotify" href="${spotifyArtist}" target="_blank" rel="noopener" title="${escapeHTML(a.artist)} on Spotify" aria-label="${escapeHTML(a.artist)} on Spotify">${ICON_SPOTIFY}</a>
-          <a class="al-apple"   href="${appleArtist}"   target="_blank" rel="noopener" title="${escapeHTML(a.artist)} on Apple Music" aria-label="${escapeHTML(a.artist)} on Apple Music">${ICON_APPLE}</a>
+          <a class="al-spotify" href="${spotifyArtist}" target="_blank" rel="noopener" title="${escapeHTML(a.artist)} on Spotify" aria-label="${escapeHTML(a.artist)} on Spotify">${ICON_SPOTIFY_HTML}</a>
+          <a class="al-apple"   href="${appleArtist}"   target="_blank" rel="noopener" title="${escapeHTML(a.artist)} on Apple Music" aria-label="${escapeHTML(a.artist)} on Apple Music">${ICON_APPLE_HTML}</a>
         </div>
       </div>`;
     })() : '';
@@ -208,6 +206,37 @@ function initReading(){
       <div class="book-note">${escapeHTML(s.note)}</div>
     </div>`).join('');
 }
+
+// ================= LISTENING (podcasts) =================
+function initListening(){
+  if (typeof PODCASTS === 'undefined') return;
+  const renderGroup = (containerId, items) => {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = items.map(p => {
+      const q = encodeURIComponent(`${p.title} ${p.podcast||''}`.trim());
+      const spotifyUrl = p.spotify || `https://open.spotify.com/search/${q}/podcasts`;
+      const appleUrl   = p.apple   || `https://podcasts.apple.com/us/search?term=${q}`;
+      return `
+        <div class="podcast-card reveal">
+          <div class="podcast-title">${escapeHTML(p.title)}</div>
+          ${p.podcast ? `<div class="podcast-show">${escapeHTML(p.podcast)}</div>` : ''}
+          <div class="podcast-note">${escapeHTML(p.note)}</div>
+          <div class="album-links" style="margin-top:auto">
+            <span class="al-row-label">Listen</span>
+            <a class="al-spotify" href="${spotifyUrl}" target="_blank" rel="noopener" title="Find “${escapeHTML(p.title)}” on Spotify" aria-label="Find “${escapeHTML(p.title)}” on Spotify">${ICON_SPOTIFY_HTML}</a>
+            <a class="al-apple"   href="${appleUrl}"   target="_blank" rel="noopener" title="Find “${escapeHTML(p.title)}” on Apple Podcasts" aria-label="Find “${escapeHTML(p.title)}” on Apple Podcasts">${ICON_APPLE_HTML}</a>
+          </div>
+        </div>`;
+    }).join('');
+  };
+  renderGroup('podcastsNps',     PODCASTS.nps     || []);
+  renderGroup('podcastsOutside', PODCASTS.outside || []);
+}
+
+// Shared brand mark SVGs (also used by initStates)
+const ICON_SPOTIFY_HTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12C24 5.4 18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/></svg>';
+const ICON_APPLE_HTML   = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.5 0 8.5 1.6v11.6c-.4-.2-.9-.3-1.4-.3a3.3 3.3 0 1 0 3.3 3.3V4.6l4.7-.9v6.7c-.4-.2-.9-.3-1.4-.3a3.3 3.3 0 1 0 3.3 3.3V0z"/></svg>';
 
 // ================= DAYS =================
 function initDays(){

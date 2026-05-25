@@ -865,3 +865,63 @@
   .al-spotify{background:#1DB954;color:#fff}
   .al-apple  {background:linear-gradient(135deg,#FA243C 0%,#FB5C74 100%);color:#fff}
   .al-apple svg{width:15px;height:15px}
+
+  /* Reading & Listening — top-level block + icons */
+  .rl-block{margin-bottom:64px}
+  .rl-block:last-child{margin-bottom:0}
+  .rl-block-title{
+    display:flex;align-items:center;gap:14px;
+    font-family:'Alfa Slab One',serif;font-weight:normal;
+    font-size:28px;color:var(--navy);letter-spacing:.02em;
+    margin-bottom:24px;padding-bottom:12px;
+    border-bottom:3px solid var(--rust);
+  }
+  .rl-icon{
+    width:36px;height:36px;color:var(--rust);
+    background:var(--paper);border:2px solid var(--rust);
+    padding:6px;border-radius:8px;flex-shrink:0;
+    box-shadow:2px 2px 0 var(--gold);
+  }
+  .reading-block-title{display:flex;align-items:center;gap:10px}
+  .rl-sub-icon{
+    width:22px;height:22px;color:var(--rust);flex-shrink:0;
+  }
+
+  /* Podcast cards */
+  .podcast-grid{
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:20px;
+  }
+  .podcast-card{
+    background:var(--paper-light);
+    border:2px solid var(--wood-dark);
+    box-shadow:4px 4px 0 var(--wood), var(--shadow);
+    padding:18px 20px;position:relative;
+    transition:transform .2s;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .podcast-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--wood), var(--shadow)}
+  .podcast-card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:6px;
+    background:linear-gradient(180deg, var(--forest) 0%, var(--teal) 50%, var(--navy) 100%);
+  }
+  .podcast-card .podcast-title{
+    font-family:'Fraunces',serif;font-weight:900;font-size:17px;
+    color:var(--navy);line-height:1.2;padding-left:4px;
+  }
+  .podcast-card .podcast-show{
+    font-family:'Fraunces',serif;font-style:italic;font-size:13px;
+    color:var(--rust);padding-left:4px;
+  }
+  .podcast-card .podcast-note{
+    font-size:13.5px;line-height:1.5;color:var(--ink);
+    padding-left:4px;padding-top:8px;
+    border-top:1px dashed rgba(74,48,24,.25);
+    flex:1;
+  }
+  .podcast-card .album-links{margin-top:6px;padding-left:4px}
+
+  @media (max-width:680px){
+    .rl-block-title{font-size:22px;gap:10px}
+    .rl-icon{width:30px;height:30px;padding:4px}
+  }

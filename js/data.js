@@ -740,3 +740,51 @@ const BUDGET_GAS_BY_DAY = [
   {dayNum:15, route:'Yosemite → Tahoe',                   miles:236, gallons:7.4,  pricePerGal:5.30, cost:39.20},
   {dayNum:16, route:'Tahoe → San Francisco',              miles:194, gallons:6.1,  pricePerGal:5.30, cost:32.30}
 ];
+
+// ================= PODCASTS (for the Reading & Listening page) =================
+const PODCASTS = {
+  nps: [
+    {
+      title: 'Parkography',
+      podcast: 'Parkography',
+      note: 'In-depth history, vivid soundscapes, and stories behind landmarks like the Grand Canyon and Yellowstone.'
+    },
+    {
+      title: 'Exploring the National Parks',
+      podcast: 'Dirt In My Shoes',
+      note: 'Highly recommended for trip planning — detailed episodes on Yellowstone (including Lamar Valley and the Grand Canyon of the Yellowstone), Zion, and scenic drives.'
+    },
+    {
+      title: 'National Park After Dark',
+      podcast: 'National Park After Dark',
+      note: "Explores the darker, stranger, and historical side of America's national parks. Perfect for evening listening after a day of hiking."
+    },
+    {
+      title: 'My Park Story',
+      podcast: 'NPS · My Park Story',
+      note: 'Personal, intimate stories from individuals connected to NPS lands — produced by the National Park Service itself.'
+    }
+  ],
+  outside: [
+    {
+      title: 'A Wild Mission to Visit Every National Park',
+      podcast: 'Outside Podcast · 2023',
+      note: '63 Parks Traveler writer Emily Pennington discusses her experience visiting every National Park, with insights that map straight onto your trip.'
+    },
+    {
+      title: 'The Dumbest, Greatest Road Trip Ever',
+      podcast: 'Outside Podcast · 2021',
+      note: 'A perfect, humorous story for a long road trip — exactly the energy you want at hour eight of driving.'
+    },
+    {
+      title: 'Outdoor Adventure and the Art of Self Reliance, with Nick Offerman',
+      podcast: 'Outside Podcast · 2025',
+      note: 'An entertaining interview that complements the rugged spirit of parks like Lassen and Badlands.'
+    },
+    {
+      title: 'The Joy of the Very Short Adventure',
+      podcast: 'Outside Podcast · 2023',
+      note: 'Explores "microadventures" — perfect for finding hidden gems inside the bigger parks.'
+    }
+  ]
+};

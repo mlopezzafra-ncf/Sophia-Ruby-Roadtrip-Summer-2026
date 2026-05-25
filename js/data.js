@@ -233,15 +233,63 @@ const NATIONAL_PARKS = [
 
 const PLANNED = {food:717, gas:568, lodging:869, activities:100, misc:222};
 
+// Structured packing data from the spreadsheet.
+// Each item: { item, buy (need to purchase), pack (need to pack), both (one for both ppl), who, qty, note, link }
 const PACKING = {
-  'CORE ESSENTIALS':["Driver's licenses & ID",'Credit + debit cards','Cash ($200 emergency)','Phone + charger','Power bank (2)','Car charger','AAA card / Roadside number','Printed itinerary','Paper map (backup)','Insurance info'],
-  'COOKING KIT':['Camp stove + fuel','Pot + pan','Utensils + spatula','Plates + bowls + mugs','Knife + cutting board','Can opener','Matches + lighter','Dish soap + sponge','Paper towels','Trash bags (lots)'],
-  'WATER & FOOD':['2× 1-gal water jugs','Reusable bottles','Cooler + ice packs','Dry goods bin','Coffee + French press','Salt, pepper, olive oil','Snacks (bars, jerky, nuts)'],
-  'CAR CAMPING':['Sleeping bags','Sleeping pads','Pillows (real ones)','Blankets','Sun shades (x2)','Window mesh screens','Headlamps (x2)','Lantern','Duct tape'],
-  'HIKING':['Hiking shoes','Daypacks','Hiking poles','Rain jackets','Warm layer (fleece)','Sun hats','Sunglasses','Sunscreen SPF 50','Bug spray','Blister pads'],
-  'HYGIENE':['Toothbrush + paste','Biodegradable soap','Quick-dry towels','Shampoo','Deodorant','Wet wipes (lots)','Hand sanitizer','Toilet paper','Menstrual supplies'],
-  'FIRST AID':['Ibuprofen / Tylenol','Benadryl','Band-aids + gauze','Antiseptic wipes','Tweezers','Moleskin','Ace bandage','Electrolyte packets','Any prescriptions'],
-  'DOCUMENTS':['Passports (for ID)','Car registration','Car insurance','Park pass (America the Beautiful)','Emergency contacts (written)','Medical info card']
+  'ESSENTIALS':[
+    {item:'Premium Planet Fitness Membership', buy:true, both:true, who:'Ruby', note:'Covers showers + workouts coast-to-coast', link:'https://mapstack.io/map/NZGqFZ/map-of-planet-fitness-locations-us'},
+    {item:'Speaker',                            pack:true},
+    {item:'Portable Chargers'},
+    {item:'Big Water Jugs',                     buy:true, both:true, qty:'×5'},
+    {item:"Matt's digital camera",              pack:true, both:true, who:'Ruby'},
+    {item:'Locker Locks',                       pack:true, both:true, who:'Ruby', qty:'×2'}
+  ],
+  'FOOD & COOKING':[
+    {item:'Cooler (large)',                     buy:true, both:true, note:"Check grandparents' / Goodwill first"},
+    {item:'Propane Hot Plate',                  buy:true, both:true, note:'~$30 · backpacking-style single burner', link:'https://www.amazon.com/dp/B01HQRD8EO'},
+    {item:'Propane Canisters',                  buy:true, both:true, qty:'×5', note:'16oz canister lasts ~2 hrs on high'},
+    {item:'Pan',                                buy:true, both:true},
+    {item:'Pot',                                buy:true, both:true},
+    {item:'Olive Oil (TJ)',                     buy:true},
+    {item:'Salt',                               buy:true},
+    {item:'Dish Soap',                          buy:true},
+    {item:'Dish Sponge',                        buy:true},
+    {item:'Dish Towels'},
+    {item:'Traveling Espresso Machine',         pack:true},
+    {item:"Paring + Chef's Knife"},
+    {item:'Cutting Board'},
+    {item:'Tupperware',                         qty:'×10', note:'Rubbermaid TakeAlongs'},
+    {item:'Foil + Plastic Bags (gallon)'}
+  ],
+  'HIKING & WORKOUT':[
+    {item:'Hiking Shoes',     pack:true},
+    {item:'Hiking Backpack',  pack:true},
+    {item:'Workout Shoes',    pack:true},
+    {item:'Workout Gear',     pack:true}
+  ],
+  'FOR THE CAR':[
+    {item:'Mesh Window Screens',                pack:true, both:true, who:'Sopez'},
+    {item:'Privacy Shields',                    buy:true, both:true, note:'For side windows (not back/front) · ~$20', link:'https://www.ebay.com/itm/357605568460'},
+    {item:'Little Battery Lamp',                pack:true},
+    {item:'Little Battery Fans',                buy:true,             qty:'×2', note:'~$13 each · long-lasting mini fans', link:'https://www.amazon.com/dp/B0DPLDBZ6H'},
+    {item:'Blankets',                           note:"Try grandparents' first"},
+    {item:'Fidgets',                            pack:true, who:'Ruby'},
+    {item:"Ruby's attachable phone holder",     pack:true}
+  ],
+  'HYGIENE':[
+    {item:'Tide Pods',          pack:true, both:true},
+    {item:'Shower Shoes',       pack:true},
+    {item:'Towels',             buy:true, pack:true, qty:'×2+', note:'Microfiber especially'},
+    {item:'Shampoo + Conditioner', buy:true, both:true},
+    {item:'Body Wash',          buy:true, both:true},
+    {item:'Baby Wipes',         buy:true, both:true},
+    {item:'Laundry Bag',        pack:true},
+    {item:'Toilet Paper',       buy:true},
+    {item:"Rebecca's Wrath",    pack:true, both:true, who:'Kara!!'}
+  ],
+  'EXTRAS':[
+    {item:'Hammock + Hammock Straps', pack:true}
+  ]
 };
 
 const BOOKS = {
@@ -573,4 +621,122 @@ const DAYS = [
       {tag:'Photos',text:'Back up everything to cloud storage before Ruby flies.'}
     ],
     protip:"This trip was 4,454 miles. You crossed a country. Don't let the farewell be small — you made something."}
+];
+
+// ================= LODGING (per-night detail from spreadsheet) =================
+const LODGING = [
+  {night:0, dayNum:0, date:'Fri, May 29', city:'Hamilton, NY',          name:"Grandparents' house",                  type:'bed',       cost:0,      address:'Hamilton, NY',                                              booked:'Family',                  notes:'Welcome Ruby!'},
+  {night:1, dayNum:1, date:'Sat, May 30', city:'Sandusky, OH',          name:'Car camp · Sandusky',                  type:'car camp',  cost:0,      address:'Sandusky, OH',                                              booked:'No reservation',          notes:'First night in the rig — the dress rehearsal'},
+  {night:2, dayNum:2, date:'Sun, May 31', city:'Madison, WI',           name:"Gwen's Apartment",                     type:'bed',       cost:0,      address:'Madison, WI',                                               booked:'Family · Night 1 of 2',   notes:''},
+  {night:3, dayNum:3, date:'Mon, Jun 1',  city:'Madison, WI',           name:"Gwen's Apartment",                     type:'bed',       cost:0,      address:'Madison, WI',                                               booked:'Family · Night 2 of 2',   notes:''},
+  {night:4, dayNum:4, date:'Tue, Jun 2',  city:'Chamberlain, SD',       name:'Sanford Chamberlain Med Center lot',   type:'car camp',  cost:0,      address:'Chamberlain, SD',                                           booked:'No reservation needed',   notes:'Hospital parking — safe overnight option'},
+  {night:5, dayNum:5, date:'Wed, Jun 3',  city:'Lusk, WY',              name:'Covered Wagon Motel',                  type:'hotel',     cost:0,      address:'730 S Main Street, Lusk, WY 82225',                         booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306395 · Conf #2439839733', link:'http://www.coveredwagonmotel.com/'},
+  {night:6, dayNum:6, date:'Thu, Jun 4',  city:'Moab, UT',              name:'Home in Moab (Airbnb)',                type:'airbnb',    cost:288.79, costTotal:577.58, address:'1415 N Main St, Moab, UT 84532',         booked:'BOOKED · Night 1 of 2',   notes:'Total $577.58 split with Vamsi · Vamsi paid his portion ($310.84)'},
+  {night:7, dayNum:7, date:'Fri, Jun 5',  city:'Moab, UT',              name:'Home in Moab (Airbnb)',                type:'airbnb',    cost:0,                          address:'1415 N Main St, Moab, UT 84532',         booked:'BOOKED · Night 2 of 2',   notes:'Same place'},
+  {night:8, dayNum:8, date:'Sat, Jun 6',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:140,    address:"Ruby's Inn, Bryce Canyon, UT",                              booked:'BOOKED · Night 1 of 2',   notes:'$140 estimated total for both nights', link:'https://www.rubysinn.com/'},
+  {night:9, dayNum:9, date:'Sun, Jun 7',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:0,                          address:"Ruby's Inn, Bryce Canyon, UT",           booked:'BOOKED · Night 2 of 2'},
+  {night:10,dayNum:10,date:'Mon, Jun 8',  city:'Orderville, UT',        name:'Zion Airbnb (Orderville)',             type:'airbnb',    cost:332.89, costTotal:665.77, address:'245 W Pinyon Pine Drive, Orderville, UT 84758', booked:'BOOKED · Night 1 of 2', notes:'Washer + dryer onsite · Vamsi paid his portion'},
+  {night:11,dayNum:11,date:'Tue, Jun 9',  city:'Orderville, UT',        name:'Zion Airbnb (Orderville)',             type:'airbnb',    cost:0,                          address:'245 W Pinyon Pine Drive, Orderville, UT 84758', booked:'BOOKED · Night 2 of 2', notes:'Same place'},
+  {night:12,dayNum:12,date:'Wed, Jun 10', city:'Kernville, CA',         name:'Whispering Pines Lodge',               type:'hotel',     cost:0,      address:'13745 Sierra Way, Kernville, CA 93238',                     booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306698 · Conf #2439844351', link:'https://www.pineskernville.com/'},
+  {night:13,dayNum:13,date:'Thu, Jun 11', city:'Yosemite area, CA',     name:'Car camp near Yosemite',               type:'car camp',  cost:30,     address:'National forest / dispersed',                               booked:'Not yet · book ahead',    notes:'Yosemite area packs early in summer'},
+  {night:14,dayNum:14,date:'Fri, Jun 12', city:'Yosemite, CA',          name:'Car camp near Yosemite',               type:'car camp',  cost:30,     address:'National forest / dispersed',                               booked:'Not yet · book ahead'},
+  {night:15,dayNum:15,date:'Sat, Jun 13', city:'Lake Tahoe area, CA',   name:'Hipcamp · Foothill Ridge',             type:'hipcamp',   cost:47.70,  address:'~1 hr from Lake Tahoe, CA',                                 booked:'BOOKED',                  link:'https://www.hipcamp.com/en-US/land/california-foothill-ridge-pw1hjnrd'},
+  {night:16,dayNum:16,date:'Sun, Jun 14', city:'San Francisco, CA',     name:"Cousins' home",                         type:'bed',       cost:0,      address:'San Francisco, CA',                                         booked:'Family · Night 1 of 2'},
+  {night:17,dayNum:17,date:'Mon, Jun 15', city:'San Francisco, CA',     name:"Cousins' home",                         type:'bed',       cost:0,      address:'San Francisco, CA',                                         booked:'Family · Night 2 of 2'}
+];
+
+// ================= FLIGHTS (from the Flights tab) =================
+const FLIGHTS = [
+  {dayNum:0,  date:'Fri, May 29', who:'Ruby',  from:'SRQ', to:'CLT', airline:'AA', flight:'5627', dep:'5:20 PM', arr:'7:35 PM', duration:'2h 10m', cost:'Booked on pts'},
+  {dayNum:0,  date:'Fri, May 29', who:'Ruby',  from:'CLT', to:'SYR', airline:'AA', flight:'1976', dep:'9:00 PM', arr:'10:50 PM', duration:'2h 0m', layover:'1h 25m layover in CLT'},
+  {dayNum:6,  date:'Thu, Jun 4',  who:'Vamsi', from:'DFW', to:'DEN', airline:'UA', flight:'644',  arr:'10:10 AM',  note:'Pick up at Denver airport'},
+  {dayNum:6,  date:'Thu, Jun 4',  who:'Diego', from:'(home)', to:'DEN',                                arr:'10:10 AM',  note:'Pick up at Denver airport'},
+  {dayNum:12, date:'Wed, Jun 10', who:'Diego', from:'LAS', to:'(home)', dep:'12:40 PM', note:'Drop off at Las Vegas airport'},
+  {dayNum:12, date:'Wed, Jun 10', who:'Kara',  from:'LAS', to:'(home)', dep:'1:00 PM',  note:'Drop off at Las Vegas airport'},
+  {dayNum:12, date:'Wed, Jun 10', who:'Vamsi', from:'LAS', to:'DFW', airline:'UA', flight:'2741', dep:'3:30 PM'},
+  {dayNum:18, date:'Tue, Jun 16', who:'Ruby',  from:'SFO', to:'BWI', airline:'TP', flight:'869',  dep:'9:00 PM', arr:'5:20 AM (next day · −3h)', duration:'5h 20m', cost:'$210'},
+  {dayNum:18, date:'Tue, Jun 16', who:'Ruby',  from:'BWI', to:'SRQ', airline:'TP', flight:'221',  dep:'8:10 AM', arr:'10:45 AM', duration:'2h 35m', layover:'2h 50m layover in BWI'}
+];
+
+// ================= DAILY FOOD (from the Food tab) =================
+const DAILY_FOOD = [
+  {dayNum:0,  location:'Hamilton',                       breakfast:0,  lunch:0,  dinner:0,  snacks:0, total:0,  notes:'Ruby needs late-night snack run after landing'},
+  {dayNum:1,  location:'Hamilton → Sandusky',            breakfast:4,  lunch:0,  dinner:50, snacks:8, total:62, notes:'Aunt & Uncle lunch (free) · Mekong Vietnamese dinner'},
+  {dayNum:2,  location:'Sandusky → Madison',             breakfast:0,  lunch:10, dinner:30, snacks:8, total:48, notes:'Dinner with Gwen'},
+  {dayNum:3,  location:'Madison',                        breakfast:0,  lunch:30, dinner:20, snacks:8, total:58, notes:'Brunch out + grocery dinner'},
+  {dayNum:4,  location:'Madison → Sioux Falls → SD',     breakfast:4,  lunch:10, dinner:30, snacks:8, total:52, notes:'Sioux Falls takeout for dinner'},
+  {dayNum:5,  location:'Sioux Falls → Badlands → Lusk',  breakfast:4,  lunch:10, dinner:16, snacks:8, total:38, notes:'Wall Drug for lunch'},
+  {dayNum:6,  location:'Lusk → Moab',                    breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Long drive day — quick meals'},
+  {dayNum:7,  location:'Moab',                           breakfast:4,  lunch:14, dinner:18, snacks:8, total:44, notes:'Arches park day'},
+  {dayNum:8,  location:'Moab → Bryce Canyon',            breakfast:4,  lunch:14, dinner:20, snacks:8, total:46, notes:'Scenic Byway 12 lunch stop'},
+  {dayNum:9,  location:'Bryce Canyon',                   breakfast:4,  lunch:6,  dinner:20, snacks:8, total:38, notes:'Camp meals all day'},
+  {dayNum:10, location:'Bryce → Zion',                   breakfast:4,  lunch:6,  dinner:20, snacks:8, total:38, notes:'Dinner in Springdale'},
+  {dayNum:11, location:'Zion',                           breakfast:4,  lunch:6,  dinner:20, snacks:8, total:38, notes:'Picnic in the park + dinner out'},
+  {dayNum:12, location:'Zion → Sequoia',                 breakfast:4,  lunch:6,  dinner:15, snacks:8, total:33, notes:'Meal-prepped from Airbnb'},
+  {dayNum:13, location:'Sequoia → Yosemite',             breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Picnic lunch in Giant Forest'},
+  {dayNum:14, location:'Yosemite',                       breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Lodge lunch + camp dinner'},
+  {dayNum:15, location:'Yosemite → Lake Tahoe',          breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Lakeside dinner'},
+  {dayNum:16, location:'Lake Tahoe → San Francisco',     breakfast:4,  lunch:10, dinner:0,  snacks:8, total:22, notes:'Dinner with cousins (free)'},
+  {dayNum:17, location:'San Francisco',                  breakfast:4,  lunch:40, dinner:0,  snacks:8, total:52, notes:'All-day eating in SF'},
+  {dayNum:18, location:'San Francisco (departure)',      breakfast:0,  lunch:0,  dinner:0,  snacks:0, total:0,  notes:'Airport coffee'}
+];
+
+// ================= BUDGET DETAIL (from the Budget tab) =================
+const BUDGET_AUNT_RANGES = {
+  food:   {low:400, high:600},
+  hotels: {low:800, high:1000},
+  gas:    {low:500, high:700},
+  total:  {low:1700, high:2300}
+};
+
+const BUDGET_TOTALS = {
+  food:        717,
+  gas:         568.10,
+  miscSetup:   221.59,
+  lodging:     869.38,
+  flights:     210,
+  grandTotal:  2586.06
+};
+
+const BUDGET_RUBY_PAID = [
+  {item:'Paid AirBNBs (Moab + Zion)', amount:621.68},
+  {item:'Ruby return flight (SFO → SRQ)', amount:210},
+  {item:'TOTAL Ruby has paid', amount:831.68, total:true}
+];
+
+const BUDGET_KNOWN_MISC = [
+  {item:'Premium PlanetFit Membership', notes:'Covers both ppl · $25/mo + $49 annual',                   cost:29.08},
+  {item:'Big Water Jugs (×5)',          notes:'$1.50 each',                                              cost:7.50},
+  {item:'Little Battery Fans (×2)',     notes:'$13 each',                                                cost:26.00},
+  {item:'Propane Hot Plate',            notes:'Single burner backpacking type',                          cost:30.00},
+  {item:'Propane Canisters (×5)',       notes:'16oz canister lasts ~2 hrs on high',                      cost:37.50},
+  {item:'Laundromat Stop',              notes:'Half-way · Zion Airbnb has washer/dryer',                 cost:10.00},
+  {item:'Daily Ice (×8)',               notes:'For the cooler',                                          cost:16.00},
+  {item:'Cooler (large)',               notes:"Try Grandparents'/Goodwill first",                        cost:20.00},
+  {item:"Chef's Knife",                                                                                  cost:2.54},
+  {item:'Paring Knife',                                                                                  cost:7.97},
+  {item:'Cutting Board',                                                                                 cost:9.88},
+  {item:'Tupperware (×10)',             notes:'Rubbermaid TakeAlongs',                                   cost:5.22},
+  {item:'Foil',                                                                                          cost:1.88},
+  {item:'Plastic Bags (gallon)',                                                                         cost:3.52},
+  {item:'Dish Soap',                                                                                     cost:3.94},
+  {item:'Dish Sponge',                                                                                   cost:3.88}
+];
+
+const BUDGET_GAS_BY_DAY = [
+  {dayNum:1,  route:'Hamilton → Sandusky',                miles:464, gallons:14.5, pricePerGal:3.50, cost:50.80},
+  {dayNum:2,  route:'Sandusky → Madison',                 miles:437, gallons:13.7, pricePerGal:3.40, cost:46.40},
+  {dayNum:4,  route:'Madison → Chamberlain (+ stops)',    miles:594, gallons:18.6, pricePerGal:3.40, cost:63.20},
+  {dayNum:5,  route:'SD → Badlands → Rushmore → WY',      miles:388, gallons:12.1, pricePerGal:3.40, cost:41.10},
+  {dayNum:6,  route:'Lusk → Moab (+ stops)',              miles:604, gallons:18.9, pricePerGal:3.80, cost:71.80},
+  {dayNum:7,  route:'Moab / Arches park driving',         miles:80,  gallons:2.5,  pricePerGal:3.80, cost:9.50},
+  {dayNum:8,  route:'Moab → Bryce + park driving',        miles:328, gallons:10.3, pricePerGal:3.80, cost:39.10},
+  {dayNum:9,  route:'Bryce full day in park',             miles:80,  gallons:2.5,  pricePerGal:3.80, cost:9.50},
+  {dayNum:10, route:'Bryce → Zion + exploring',           miles:153, gallons:4.8,  pricePerGal:3.80, cost:18.20},
+  {dayNum:11, route:'Zion full day in park',              miles:80,  gallons:2.5,  pricePerGal:3.80, cost:9.50},
+  {dayNum:12, route:'Zion → Sequoia (+ Vegas drop)',      miles:544, gallons:17.0, pricePerGal:5.30, cost:90.10},
+  {dayNum:13, route:'Sequoia → Yosemite + park',          miles:188, gallons:5.9,  pricePerGal:5.30, cost:31.30},
+  {dayNum:14, route:'Yosemite full day in park',          miles:100, gallons:3.1,  pricePerGal:5.30, cost:16.40},
+  {dayNum:15, route:'Yosemite → Tahoe',                   miles:236, gallons:7.4,  pricePerGal:5.30, cost:39.20},
+  {dayNum:16, route:'Tahoe → San Francisco',              miles:194, gallons:6.1,  pricePerGal:5.30, cost:32.30}
 ];

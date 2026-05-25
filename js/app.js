@@ -1,4 +1,5 @@
-// ================= INIT =================
+// ================= INIT (multi-page aware) =================
+// Each init function checks for its target element. Missing element = skip.
 document.addEventListener('DOMContentLoaded', () => {
   initCountdown();
   initStates();
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMap();
   initBudget();
   initPacking();
+  initLodgingTotalsOnDays(); // re-renders day lodging cells with full detail if present
   initReveals();
   initExportImport();
 });
@@ -15,10 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 function escapeHTML(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function storageGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
 function storageSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function fmtMoney(n){ if(n==null||isNaN(n)) return ''; return '$'+Number(n).toFixed(2).replace(/\.00$/,''); }
 
 // ================= COUNTDOWN =================
 function initCountdown(){
   const el = document.getElementById('countdown');
+  if (!el) return;
   const update = () => {
     const diff = TRIP_START - new Date();
     el.textContent = Math.max(0, Math.ceil(diff / (1000*60*60*24)));
@@ -29,6 +33,7 @@ function initCountdown(){
 // ================= STATES =================
 function initStates(){
   const grid = document.getElementById('statesGrid');
+  if (!grid) return;
   STATES.forEach(s => {
     const el = document.createElement('div');
     el.className = 'state-poster reveal';
@@ -56,6 +61,7 @@ function initStates(){
 // ================= PARKS =================
 function initParks(){
   const grid = document.getElementById('parksGrid');
+  if (!grid) return;
   NATIONAL_PARKS.forEach((p, idx) => {
     const el = document.createElement('div');
     el.className = 'park-poster reveal' + (p.img ? '' : ' no-image');
@@ -184,7 +190,52 @@ function initReading(){
 // ================= DAYS =================
 function initDays(){
   const grid = document.getElementById('daysGrid');
+  if (!grid) return;
   DAYS.forEach(d => {
+    const lodgingForDay = (typeof LODGING !== 'undefined') ? LODGING.find(l => l.dayNum === d.n) : null;
+    const flightsForDay = (typeof FLIGHTS !== 'undefined') ? FLIGHTS.filter(f => f.dayNum === d.n) : [];
+    const foodForDay    = (typeof DAILY_FOOD !== 'undefined') ? DAILY_FOOD.find(f => f.dayNum === d.n) : null;
+
+    const flightHTML = flightsForDay.length ? `
+      <div class="day-flights">
+        <div class="hd">✈ Flights today</div>
+        ${flightsForDay.map(f => {
+          const seg = [f.from, f.to].filter(Boolean).join(' → ');
+          const route = (f.airline && f.flight) ? `${escapeHTML(f.airline)} ${escapeHTML(f.flight)}` : '';
+          const times = [f.dep && `dep ${escapeHTML(f.dep)}`, f.arr && `arr ${escapeHTML(f.arr)}`].filter(Boolean).join(' · ');
+          return `<div class="flight-row">
+            <span class="who">${escapeHTML(f.who)}</span>
+            <span class="seg">${escapeHTML(seg)}</span>
+            ${route ? `<span class="ref">${route}</span>` : ''}
+            ${times ? `<span class="times">${times}</span>` : ''}
+            ${f.duration ? `<span class="dur">${escapeHTML(f.duration)}</span>` : ''}
+            ${f.layover  ? `<span class="lay">${escapeHTML(f.layover)}</span>` : ''}
+            ${f.cost     ? `<span class="cost">${escapeHTML(f.cost)}</span>` : ''}
+            ${f.note     ? `<span class="note">${escapeHTML(f.note)}</span>` : ''}
+          </div>`;
+        }).join('')}
+      </div>` : '';
+
+    const lodgingMeta = lodgingForDay ? [
+      lodgingForDay.address     ? `📍 ${escapeHTML(lodgingForDay.address)}` : '',
+      lodgingForDay.booked      ? escapeHTML(lodgingForDay.booked) : '',
+      lodgingForDay.cost        ? `${fmtMoney(lodgingForDay.cost)}${lodgingForDay.costTotal ? ' (S&R share)' : ''}` : (lodgingForDay.cost === 0 ? 'Free' : ''),
+      lodgingForDay.confirmation? `Conf · ${escapeHTML(lodgingForDay.confirmation)}` : '',
+      lodgingForDay.notes       ? escapeHTML(lodgingForDay.notes) : '',
+      lodgingForDay.link        ? `<a href="${lodgingForDay.link}" target="_blank" rel="noopener">↗ link</a>` : ''
+    ].filter(Boolean).join(' · ') : (d.lodging && d.lodging.meta ? escapeHTML(d.lodging.meta) : '');
+    const lodgingName = lodgingForDay ? lodgingForDay.name : (d.lodging && d.lodging.name ? d.lodging.name : '');
+
+    const foodLineHTML = foodForDay && foodForDay.total > 0 ? `
+      <div class="food-detail">
+        <span class="food-chip">B ${fmtMoney(foodForDay.breakfast)}</span>
+        <span class="food-chip">L ${fmtMoney(foodForDay.lunch)}</span>
+        <span class="food-chip">D ${fmtMoney(foodForDay.dinner)}</span>
+        <span class="food-chip">S ${fmtMoney(foodForDay.snacks)}</span>
+        <span class="food-chip total">Total ${fmtMoney(foodForDay.total)}</span>
+        ${foodForDay.notes ? `<span class="food-note">${escapeHTML(foodForDay.notes)}</span>` : ''}
+      </div>` : '';
+
     const card = document.createElement('article');
     card.className = 'day-card reveal';
     card.id = `day-${d.n}`;
@@ -207,6 +258,7 @@ function initDays(){
           <span class="day-chip">⏱ ${d.drive}</span>
           <span class="day-chip">🌙 ${d.sleep}</span>
         </div>
+        ${flightHTML}
         <div class="day-main">
           <div class="day-content-split">
             <div>
@@ -217,13 +269,14 @@ function initDays(){
               <h4 class="day-section-title">The basics</h4>
               <div class="day-info-box" style="margin-bottom:10px">
                 <div class="hd">🏠 Sleep</div>
-                <div class="bd">${d.lodging.name}</div>
-                <div class="meta">${d.lodging.meta}</div>
+                <div class="bd">${escapeHTML(lodgingName)}</div>
+                <div class="meta">${lodgingMeta}</div>
               </div>
               <div class="day-info-box">
                 <div class="hd">🍽 Food</div>
                 <div class="bd">${d.food.name}</div>
                 <div class="meta">${d.food.meta}</div>
+                ${foodLineHTML}
               </div>
             </div>
           </div>
@@ -254,8 +307,11 @@ function initDays(){
   });
 }
 
+function initLodgingTotalsOnDays(){} // placeholder for future use
+
 function toggleDay(n){
   const card = document.getElementById(`day-${n}`);
+  if (!card) return;
   const wasOpen = card.classList.contains('open');
   card.classList.toggle('open');
   if (!wasOpen) setTimeout(() => initMiniMap(n), 120);
@@ -270,18 +326,15 @@ const tileLayers = {
 };
 
 function initMap(){
+  const mapEl = document.getElementById('mainMap');
+  if (!mapEl || typeof L === 'undefined') return;
   mainMap = L.map('mainMap', {
-    scrollWheelZoom:false,
-    zoomControl:true,
-    tap:true, tapTolerance:15,
-    touchZoom:true,
-    doubleClickZoom:true,
-    dragging:true,
-    bounceAtZoomLimits:false
+    scrollWheelZoom:false, zoomControl:true,
+    tap:true, tapTolerance:15, touchZoom:true,
+    doubleClickZoom:true, dragging:true, bounceAtZoomLimits:false
   }).setView([41.5,-98],4);
   switchLayer('street');
 
-  // Draw straight-line polyline immediately as placeholder, then enhance with OSRM
   for (let i=0; i<STOPS.length-1; i++){
     const a=STOPS[i], b=STOPS[i+1];
     L.polyline([[a.lat,a.lng],[b.lat,b.lng]], {color:DAY_COLORS[i%DAY_COLORS.length], weight:3, opacity:.4, dashArray:'6,8'})
@@ -289,7 +342,6 @@ function initMap(){
       .bindTooltip(`Leg ${i+1}: ${a.name} → ${b.name}`, {sticky:true});
   }
 
-  // Fetch real driving route via OSRM for full trip
   fetchOSRM(STOPS.map(s => [s.lng, s.lat])).then(coords => {
     if (coords && coords.length) {
       L.polyline(coords.map(c => [c[1], c[0]]), {
@@ -298,12 +350,10 @@ function initMap(){
     }
   });
 
-  // Ruby's flights (dashed brown)
   const rubyIn=[[27.3954,-82.5544],[35.2144,-80.9473],[43.1119,-76.1063],[42.8270,-75.5446]];
   L.polyline(rubyIn,{color:'#6B4423',weight:2.5,opacity:.7,dashArray:'6,6'}).addTo(mainMap).bindTooltip("Ruby's flight in: SRQ → CLT → SYR");
   L.polyline([[37.6213,-122.3790],[27.3954,-82.5544]],{color:'#6B4423',weight:2.5,opacity:.7,dashArray:'6,6'}).addTo(mainMap).bindTooltip("Ruby's flight home: SFO → SRQ");
 
-  // Numbered stop markers
   STOPS.forEach(s => {
     const cls = s.type==='start' ? 'start' : s.type==='end' ? 'end' : s.type==='park' ? 'park' : 'sleep';
     const icon = L.divIcon({
@@ -330,7 +380,8 @@ function initMap(){
     });
   });
 
-  document.getElementById('mapLegend').innerHTML = `
+  const legend = document.getElementById('mapLegend');
+  if (legend) legend.innerHTML = `
     <span class="legend-chip"><span class="legend-dot" style="background:#2D5A3D"></span>Start</span>
     <span class="legend-chip"><span class="legend-dot" style="background:#1A3A4F"></span>Overnight stop</span>
     <span class="legend-chip"><span class="legend-dot" style="background:#1E4030"></span>National park</span>
@@ -342,14 +393,12 @@ function initMap(){
 }
 
 function switchLayer(key){
+  if (!mainMap) return;
   if (currentLayer) mainMap.removeLayer(currentLayer);
   const cfg = tileLayers[key];
   currentLayer = L.tileLayer(cfg.url,{attribution:cfg.attr,maxZoom:cfg.maxZoom,subdomains:'abcd'}).addTo(mainMap);
 }
 
-// ================= OSRM ROUTING =================
-// Fetches a real driving route from OSRM public API.
-// Input: array of [lng, lat] pairs. Output: array of [lng, lat] coordinates along the road path.
 async function fetchOSRM(coords){
   if (!coords || coords.length < 2) return null;
   try {
@@ -360,15 +409,12 @@ async function fetchOSRM(coords){
     const data = await resp.json();
     if (data.code !== 'Ok' || !data.routes || !data.routes.length) return null;
     return data.routes[0].geometry.coordinates;
-  } catch (e) {
-    console.warn('OSRM routing failed', e);
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
 async function initMiniMap(dayNum){
   const el = document.getElementById(`map-day-${dayNum}`);
-  if (!el || el.dataset.init) return;
+  if (!el || el.dataset.init || typeof L === 'undefined') return;
   el.dataset.init = '1';
 
   const day = DAYS.find(d => d.n === dayNum);
@@ -384,10 +430,7 @@ async function initMiniMap(dayNum){
   const color = DAY_COLORS[dayNum % DAY_COLORS.length];
 
   if (route && route.length >= 2) {
-    // Placeholder dashed polyline while OSRM loads
     const placeholder = L.polyline(route, {color, weight:3, opacity:.4, dashArray:'5,8'}).addTo(mini);
-
-    // Markers for each waypoint
     route.forEach((pt, i) => {
       const isFirst = i === 0, isLast = i === route.length-1;
       const markerColor = isFirst ? '#2D5A3D' : isLast ? '#C34A2C' : '#E8B44C';
@@ -396,10 +439,7 @@ async function initMiniMap(dayNum){
         fillColor: markerColor, color:'#F5E6C8', weight:2, fillOpacity:1
       }).addTo(mini);
     });
-
     mini.fitBounds(L.latLngBounds(route),{padding:[30,30]});
-
-    // Fetch real road path
     const lngLat = route.map(p => [p[1], p[0]]);
     const osrmCoords = await fetchOSRM(lngLat);
     if (osrmCoords && osrmCoords.length) {
@@ -409,7 +449,6 @@ async function initMiniMap(dayNum){
       }).addTo(mini);
     }
   } else {
-    // Rest/park days without a route — center on a related stop
     const nearStop = STOPS.find(s => s.day === dayNum) || STOPS.find(s => Math.abs(s.day - dayNum) <= 1);
     if (nearStop) {
       mini.setView([nearStop.lat, nearStop.lng], 10);
@@ -473,7 +512,83 @@ function renderSpotifyFrame(dayNum,url){
 // ================= BUDGET =================
 function initBudget(){
   renderExpenses();
-  document.getElementById('plannedBudget').textContent='$'+Object.values(PLANNED).reduce((a,b)=>a+b,0).toFixed(0);
+  const planned = document.getElementById('plannedBudget');
+  if (planned) planned.textContent = '$' + Object.values(PLANNED).reduce((a,b)=>a+b,0).toFixed(0);
+  renderAuntRanges();
+  renderEstimateBreakdown();
+  renderRubyPaid();
+  renderKnownMisc();
+  renderGasByDay();
+}
+function renderAuntRanges(){
+  const el = document.getElementById('budgetAuntRanges');
+  if (!el || typeof BUDGET_AUNT_RANGES === 'undefined') return;
+  const r = BUDGET_AUNT_RANGES;
+  el.innerHTML = `
+    <div class="budget-row"><span class="bcat">Food</span><span class="brange">${fmtMoney(r.food.low)} – ${fmtMoney(r.food.high)}</span></div>
+    <div class="budget-row"><span class="bcat">Hotels</span><span class="brange">${fmtMoney(r.hotels.low)} – ${fmtMoney(r.hotels.high)}</span></div>
+    <div class="budget-row"><span class="bcat">Gas</span><span class="brange">${fmtMoney(r.gas.low)} – ${fmtMoney(r.gas.high)}</span></div>
+    <div class="budget-row total"><span class="bcat">Total range</span><span class="brange">${fmtMoney(r.total.low)} – ${fmtMoney(r.total.high)}</span></div>
+  `;
+}
+function renderEstimateBreakdown(){
+  const el = document.getElementById('budgetEstimates');
+  if (!el || typeof BUDGET_TOTALS === 'undefined') return;
+  const t = BUDGET_TOTALS;
+  el.innerHTML = `
+    <div class="budget-row"><span class="bcat">Food</span><span class="bval">${fmtMoney(t.food)}</span></div>
+    <div class="budget-row"><span class="bcat">Gas</span><span class="bval">${fmtMoney(t.gas)}</span></div>
+    <div class="budget-row"><span class="bcat">Misc / Setup</span><span class="bval">${fmtMoney(t.miscSetup)}</span></div>
+    <div class="budget-row"><span class="bcat">Lodging</span><span class="bval">${fmtMoney(t.lodging)}</span></div>
+    <div class="budget-row"><span class="bcat">Travel / Flights</span><span class="bval">${fmtMoney(t.flights)}</span></div>
+    <div class="budget-row total"><span class="bcat">Estimated total</span><span class="bval">${fmtMoney(t.grandTotal)}</span></div>
+  `;
+}
+function renderRubyPaid(){
+  const el = document.getElementById('budgetRubyPaid');
+  if (!el || typeof BUDGET_RUBY_PAID === 'undefined') return;
+  el.innerHTML = BUDGET_RUBY_PAID.map(r =>
+    `<div class="budget-row${r.total?' total':''}"><span class="bcat">${escapeHTML(r.item)}</span><span class="bval">${fmtMoney(r.amount)}</span></div>`
+  ).join('');
+}
+function renderKnownMisc(){
+  const el = document.getElementById('budgetMiscList');
+  if (!el || typeof BUDGET_KNOWN_MISC === 'undefined') return;
+  el.innerHTML = BUDGET_KNOWN_MISC.map(m => `
+    <div class="misc-row">
+      <span class="m-item">${escapeHTML(m.item)}</span>
+      ${m.notes ? `<span class="m-notes">${escapeHTML(m.notes)}</span>` : '<span></span>'}
+      <span class="m-cost">${fmtMoney(m.cost)}</span>
+    </div>
+  `).join('');
+  const sum = BUDGET_KNOWN_MISC.reduce((a,m)=>a+(m.cost||0),0);
+  const totalEl = document.getElementById('budgetMiscTotal');
+  if (totalEl) totalEl.textContent = fmtMoney(sum);
+}
+function renderGasByDay(){
+  const el = document.getElementById('budgetGasList');
+  if (!el || typeof BUDGET_GAS_BY_DAY === 'undefined') return;
+  el.innerHTML = `
+    <div class="gas-row gas-head">
+      <span>Day</span><span>Route</span><span>Miles</span><span>Gal</span><span>$/gal</span><span>Cost</span>
+    </div>
+    ${BUDGET_GAS_BY_DAY.map(g => `
+      <div class="gas-row">
+        <span>${g.dayNum}</span>
+        <span>${escapeHTML(g.route)}</span>
+        <span>${g.miles}</span>
+        <span>${g.gallons.toFixed(1)}</span>
+        <span>${fmtMoney(g.pricePerGal)}</span>
+        <span>${fmtMoney(g.cost)}</span>
+      </div>
+    `).join('')}
+  `;
+  const totalMiles = BUDGET_GAS_BY_DAY.reduce((a,g)=>a+g.miles,0);
+  const totalCost  = BUDGET_GAS_BY_DAY.reduce((a,g)=>a+g.cost,0);
+  const miles = document.getElementById('budgetGasMiles');
+  const cost  = document.getElementById('budgetGasTotal');
+  if (miles) miles.textContent = totalMiles.toLocaleString();
+  if (cost)  cost.textContent  = fmtMoney(totalCost);
 }
 function addExpense(){
   const desc=document.getElementById('expDesc').value.trim(), cat=document.getElementById('expCat').value, amt=parseFloat(document.getElementById('expAmt').value);
@@ -491,8 +606,9 @@ function deleteExpense(idx){
   renderExpenses();
 }
 function renderExpenses(){
-  const expenses=JSON.parse(storageGet('expenses')||'[]');
   const list=document.getElementById('expenseList');
+  if (!list) return;
+  const expenses=JSON.parse(storageGet('expenses')||'[]');
   if (!expenses.length){ list.innerHTML='<div class="empty-msg">No expenses logged yet.</div>'; }
   else {
     list.innerHTML=expenses.slice().reverse().map((e,revIdx)=>{
@@ -501,11 +617,13 @@ function renderExpenses(){
     }).join('');
   }
   const total=expenses.reduce((s,e)=>s+e.amt,0);
-  document.getElementById('totalSpent').textContent='$'+total.toFixed(2);
+  const totalEl=document.getElementById('totalSpent');
+  if (totalEl) totalEl.textContent='$'+total.toFixed(2);
   renderProgress(expenses);
 }
 function renderProgress(expenses){
   const list=document.getElementById('progressList');
+  if (!list) return;
   const totals={};
   Object.keys(PLANNED).forEach(k=>totals[k]=0);
   expenses.forEach(e=>{ totals[e.cat]=(totals[e.cat]||0)+e.amt; });
@@ -522,13 +640,34 @@ function renderProgress(expenses){
 // ================= PACKING =================
 function initPacking(){
   const grid=document.getElementById('packingGrid');
+  if (!grid) return;
   const checked=JSON.parse(storageGet('packing')||'{}');
   Object.entries(PACKING).forEach(([cat,items])=>{
     const card=document.createElement('div');
     card.className='pack-cat reveal';
-    card.innerHTML=`<h4>${cat}</h4>`+items.map(item=>{
-      const key=`${cat}::${item}`;
-      return `<label><input type="checkbox" ${checked[key]?'checked':''} onchange="togglePack('${key.replace(/'/g,"\\'")}',this.checked)"><span>${item}</span></label>`;
+    card.innerHTML=`<h4>${cat}</h4>`+items.map(it=>{
+      // Handle both legacy string format and structured object format
+      if (typeof it === 'string'){
+        const key=`${cat}::${it}`;
+        return `<label><input type="checkbox" ${checked[key]?'checked':''} onchange="togglePack('${key.replace(/'/g,"\\'")}',this.checked)"><span>${escapeHTML(it)}</span></label>`;
+      }
+      const key=`${cat}::${it.item}`;
+      const tags=[
+        it.buy   ? '<span class="pack-tag tag-buy">BUY</span>'   : '',
+        it.pack  ? '<span class="pack-tag tag-pack">PACK</span>' : '',
+        it.both  ? '<span class="pack-tag tag-both">×2 for both</span>' : '',
+        it.qty   ? `<span class="pack-tag tag-qty">${escapeHTML(it.qty)}</span>` : '',
+        it.who   ? `<span class="pack-tag tag-who">${escapeHTML(it.who)}</span>` : ''
+      ].filter(Boolean).join('');
+      const note = it.note ? `<div class="pack-note">${escapeHTML(it.note)}${it.link?` · <a href="${it.link}" target="_blank" rel="noopener">↗ link</a>`:''}</div>` : (it.link ? `<div class="pack-note"><a href="${it.link}" target="_blank" rel="noopener">↗ link</a></div>` : '');
+      return `<label class="pack-item-row">
+        <input type="checkbox" ${checked[key]?'checked':''} onchange="togglePack('${key.replace(/'/g,"\\'")}',this.checked)">
+        <span class="pack-item-body">
+          <span class="pack-item-name">${escapeHTML(it.item)}</span>
+          ${tags ? `<span class="pack-tags">${tags}</span>` : ''}
+          ${note}
+        </span>
+      </label>`;
     }).join('');
     grid.appendChild(card);
   });
@@ -560,7 +699,9 @@ function exportData(){
   a.click();
 }
 function initExportImport(){
-  document.getElementById('importFile').addEventListener('change', async(e)=>{
+  const f = document.getElementById('importFile');
+  if (!f) return;
+  f.addEventListener('change', async(e)=>{
     const file=e.target.files[0]; if(!file) return;
     try {
       const data=JSON.parse(await file.text());

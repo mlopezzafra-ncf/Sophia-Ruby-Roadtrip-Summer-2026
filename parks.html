@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A3A4F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>National Parks · Sophia &amp; Ruby Road Trip 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Outfit:wght@300;400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<nav class="topbar">
+  <div class="inner">
+    <a class="brand" href="index.html"><span class="mark">R</span><strong>ROAD TRIP 2026</strong></a>
+    <ul>
+      <li><a href="map.html"      >Map</a></li>
+      <li><a href="states.html"   >States</a></li>
+      <li><a href="parks.html"    class="active">Parks</a></li>
+      <li><a href="days.html"     >Days</a></li>
+      <li><a href="reading.html"  >Reading</a></li>
+      <li><a href="budget.html"   >Budget</a></li>
+      <li><a href="packing.html"  >Packing</a></li>
+    </ul>
+  </div>
+</nav><section id="parks" class="parks-section">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-kicker">America's Best Idea</span>
+      <h2 class="section-title">The National Parks</h2>
+      <div class="section-line"><span class="section-dot"></span></div>
+    </div>
+    <div class="parks-grid" id="parksGrid"></div>
+  </div>
+</section>
+
+<div class="park-modal" id="parkModal" role="dialog" aria-modal="true" aria-labelledby="parkModalTitle" onclick="closeParkModal(event)">
+  <div class="park-modal-card" onclick="event.stopPropagation()">
+    <button class="park-modal-close" type="button" aria-label="Close" onclick="closeParkModal()">×</button>
+    <div id="parkModalContent"></div>
+  </div>
+</div><footer>
+  <div class="script">Go slow, take pictures, stay weird.</div>
+  <div class="msg">Love, Papa · Made with care for Sophia &amp; Ruby, May 2026</div>
+  <div class="export">
+    <button onclick="exportData()">⬇ Export Trip Data</button>
+    <button onclick="importData()">⬆ Import Trip Data</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+  </div>
+</footer><script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

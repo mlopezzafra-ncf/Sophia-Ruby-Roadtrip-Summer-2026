@@ -4,20 +4,21 @@ const TRIP_START = new Date('2026-05-29T00:00:00');
 // Numbered stops on the main map (in chronological order)
 const STOPS = [
   {n:1,  day:0,  name:'Hamilton, NY',     lat:42.8270, lng:-75.5446, type:'start', label:'Start'},
-  {n:2,  day:1,  name:'Madison, WI',      lat:43.0731, lng:-89.4012, type:'sleep', label:"Gwen's · 3 nights"},
-  {n:3,  day:4,  name:'Chamberlain, SD',  lat:43.8113, lng:-99.3279, type:'sleep', label:'Car camp'},
-  {n:4,  day:5,  name:'Badlands NP',      lat:43.8554, lng:-101.9777, type:'park'},
-  {n:5,  day:5,  name:'Mt. Rushmore',     lat:43.8791, lng:-103.4591, type:'stop'},
-  {n:6,  day:5,  name:'Lusk, WY',         lat:42.7627, lng:-104.4521, type:'sleep', label:'Covered Wagon Motel'},
-  {n:7,  day:6,  name:'Moab, UT',         lat:38.5733, lng:-109.5498, type:'sleep', label:'Airbnb · 2 nights'},
-  {n:8,  day:7,  name:'Arches NP',        lat:38.7331, lng:-109.5925, type:'park'},
-  {n:9,  day:8,  name:'Bryce Canyon NP',  lat:37.5930, lng:-112.1871, type:'park', label:'Car camp · 2 nights'},
-  {n:10, day:10, name:'Zion NP',          lat:37.2982, lng:-113.0263, type:'park', label:'"THE ONE" Airbnb · 2 nights'},
-  {n:11, day:12, name:'Kernville, CA',    lat:35.7550, lng:-118.4239, type:'sleep', label:'Whispering Pines Lodge'},
-  {n:12, day:13, name:'Sequoia NP',       lat:36.4864, lng:-118.5658, type:'park'},
-  {n:13, day:14, name:'Yosemite NP',      lat:37.8651, lng:-119.5383, type:'park'},
-  {n:14, day:15, name:'Lake Tahoe',       lat:39.0968, lng:-120.0324, type:'sleep', label:'Hipcamp'},
-  {n:15, day:16, name:'San Francisco, CA',lat:37.7749, lng:-122.4194, type:'end',   label:"Cousin's home"},
+  {n:2,  day:1,  name:'Sandusky, OH',     lat:41.4534, lng:-82.7079, type:'sleep', label:'Car camp · 1st night'},
+  {n:3,  day:2,  name:'Madison, WI',      lat:43.0731, lng:-89.4012, type:'sleep', label:"Gwen's · 2 nights"},
+  {n:4,  day:4,  name:'Chamberlain, SD',  lat:43.8113, lng:-99.3279, type:'sleep', label:'Sanford Med · car camp'},
+  {n:5,  day:5,  name:'Badlands NP',      lat:43.8554, lng:-101.9777, type:'park'},
+  {n:6,  day:5,  name:'Mt. Rushmore',     lat:43.8791, lng:-103.4591, type:'stop'},
+  {n:7,  day:5,  name:'Lusk, WY',         lat:42.7627, lng:-104.4521, type:'sleep', label:'Covered Wagon Motel'},
+  {n:8,  day:6,  name:'Moab, UT',         lat:38.5733, lng:-109.5498, type:'sleep', label:'Airbnb · 2 nights'},
+  {n:9,  day:7,  name:'Arches NP',        lat:38.7331, lng:-109.5925, type:'park'},
+  {n:10, day:8,  name:'Bryce Canyon NP',  lat:37.5930, lng:-112.1871, type:'park', label:"Tipi @ Ruby's Inn · 2 nights"},
+  {n:11, day:10, name:'Zion NP',          lat:37.2982, lng:-113.0263, type:'park', label:'Orderville Airbnb · 2 nights'},
+  {n:12, day:12, name:'Kernville, CA',    lat:35.7550, lng:-118.4239, type:'sleep', label:'Whispering Pines Lodge'},
+  {n:13, day:13, name:'Sequoia NP',       lat:36.4864, lng:-118.5658, type:'park'},
+  {n:14, day:14, name:'Yosemite NP',      lat:37.8651, lng:-119.5383, type:'park'},
+  {n:15, day:15, name:'Lake Tahoe',       lat:39.0968, lng:-120.0324, type:'sleep', label:'Hipcamp'},
+  {n:16, day:16, name:'San Francisco, CA',lat:37.7749, lng:-122.4194, type:'end',   label:"Cousin's home"},
 ];
 
 const DAY_COLORS = ['#C34A2C','#D97A3A','#E8B44C','#C88830','#2D5A3D','#1E4030','#1F4A5E','#1A3A4F','#8B3A3A','#6B4423','#9C4A3C','#A85D4A','#5A7040','#3B5E7E','#724F3F','#8A4B2E','#4A6B3A','#2D5A5E','#1A3A4F','#2A1810'];
@@ -76,6 +77,44 @@ const NATIONAL_PARKS = [
         {tag:'STARS', text:'Badlands is a designated Dark Sky park — astronomy programs run nightly in summer at the Cedar Pass Amphitheater.'}
       ]
     }},
+  {name:'ARCHES',         state:'Utah',         days:'Day 7',       detail:'Delicate Arch · Windows Section',  onTrip:true,  img:null,
+    info:{
+      established:'1971 (Monument since 1929)',
+      area:'76,679 acres',
+      link:'https://www.nps.gov/arch/',
+      history:'Cowboy-turned-prospector Alexander Ringhoffer wrote to the railroad in 1923 begging them to come see the sandstone fins; the next year the area was a national monument. The park has the densest concentration of natural stone arches on Earth — over 2,000 catalogued, formed by 65 million years of salt-bed collapse and freeze-thaw erosion in the Entrada sandstone. <strong>Edward Abbey</strong> wrote <em>Desert Solitaire</em> here as a ranger in the 1950s — the book that started modern American eco-writing.',
+      routes:[
+        {name:'Arches Scenic Drive', detail:'18 miles, paved, end-to-end. Passes every major feature: Park Avenue, Balanced Rock, Windows, Delicate Arch viewpoint, Fiery Furnace, Devils Garden. <strong>Timed entry reservation required Apr–Oct</strong> — book on recreation.gov months ahead.'},
+        {name:'Windows Section Loop', detail:'Short spur off the main road. Park once, walk to North + South Windows, Turret Arch, and Double Arch — four big arches in under a mile.'},
+        {name:'Devils Garden Trailhead', detail:'End of the road. 7.2-mi primitive loop past Landscape Arch (the longest in the park) and seven other arches.'}
+      ],
+      things:[
+        {tag:'ICON', text:'<strong>Delicate Arch</strong> — 3 mi RT, 480 ft up slickrock, no shade. The arch on the Utah license plate. <strong>Go at dawn</strong> to beat heat and crowds.'},
+        {tag:'EASY', text:'<strong>Windows + Double Arch</strong> — under a mile total, three giant arches you can walk right under.'},
+        {tag:'HIKE', text:'<strong>Landscape Arch</strong> — 1.6 mi RT, the longest natural arch in North America at 306 ft. A slab fell off in 1991; it could fall any day.'},
+        {tag:'VIEW', text:'<strong>Park Avenue overlook</strong> — sandstone monoliths lined up like skyscrapers. 5-min stop, huge payoff.'},
+        {tag:'WATER', text:'<strong>1 gallon per person per day</strong> minimum in summer. The park has no drinking water past the visitor center.'}
+      ]
+    }},
+  {name:'BRYCE CANYON',   state:'Utah',         days:'Days 8–9',    detail:'Hoodoos · Navajo Loop',           onTrip:true,  img:null,
+    info:{
+      established:'1928',
+      area:'35,835 acres',
+      link:'https://www.nps.gov/brca/',
+      history:'Named for Mormon settler Ebenezer Bryce, who homesteaded below the rim in the 1870s and famously called it "a hell of a place to lose a cow." The amphitheater itself isn\'t a canyon at all — it\'s the eroded edge of a plateau, where ice and rain carve the soft Claron limestone into <strong>hoodoos</strong>, the spires the park is famous for. The Paiute who lived here called them <em>Anka-ku-wass-a-wits</em> — "red painted faces" — and said they were the Legend People turned to stone.',
+      routes:[
+        {name:'Bryce Canyon Scenic Drive', detail:'18 miles one-way to Rainbow Point (9,115 ft). Drive to the end first, hit overlooks on the way back — the sun is at your back going south.'},
+        {name:'Rim Trail', detail:'Up to 11 mi point-to-point along the amphitheater edge. Connects Bryce Point, Inspiration Point, Sunset Point, and Sunrise Point. Walk any chunk.'},
+        {name:'Park Shuttle (free)', detail:'Optional. Runs Apr–Oct. Park at the visitor center and ride in — saves parking headaches in summer.'}
+      ],
+      things:[
+        {tag:'HIKE', text:'<strong>Navajo Loop + Queens Garden</strong> combo — 2.9 mi, ~2 hrs. THE Bryce hike. Go clockwise (down Wall Street, up Queens) for the best light.'},
+        {tag:'VIEW', text:'<strong>Sunrise at Sunrise Point</strong> or <strong>Bryce Point</strong> — the hoodoos catch fire. Arrive 30 min before.'},
+        {tag:'DRIVE', text:'<strong>Rainbow Point</strong> at the end of the 18-mi road — 9,115 ft, views stretch 100+ miles on clear days.'},
+        {tag:'STARS', text:'<strong>Dark Sky Park</strong> — among the darkest skies in the lower 48. Ranger astronomy programs nightly in summer.'},
+        {tag:'COLD', text:'Bryce rim is ~8,000 ft. Nights drop to the 40s even in June. Wool socks, beanie, hot drinks.'}
+      ]
+    }},
   {name:'ZION',           state:'Utah',         days:'Days 10–11',  detail:'The Narrows · Angels Landing',     onTrip:true,  img:PARK_IMG('Zion.png'),
     info:{
       established:'1919 (Mukuntuweap Monument, 1909)',
@@ -93,6 +132,44 @@ const NATIONAL_PARKS = [
         {tag:'EASY', text:'<strong>Canyon Overlook Trail</strong> — 1 mi RT, mild, ends at a jaw-dropper above Pine Creek Canyon.'},
         {tag:'EASY', text:'<strong>Emerald Pools</strong> — short waterfall hikes, family-friendly, good in afternoon shade.'},
         {tag:'EPIC', text:'<strong>Observation Point</strong> via East Mesa — 7 mi RT, looks straight DOWN onto Angels Landing.'}
+      ]
+    }},
+  {name:'SEQUOIA',        state:'California',   days:'Day 13',      detail:'General Sherman · Giant Forest',   onTrip:true,  img:null,
+    info:{
+      established:'1890 — second-oldest U.S. national park',
+      area:'404,064 acres',
+      link:'https://www.nps.gov/seki/',
+      history:'Established in 1890 to stop the logging of <strong>giant sequoia groves</strong> that had stood for two thousand years. The trees here are the largest living things on Earth by volume — bigger than any whale, any building. The Yokuts and Western Mono tribes lived in these mountains for thousands of years; rangers still find their grinding stones. Buffalo Soldiers of the 24th Infantry — Black cavalry units — served as the park\'s first rangers in 1903, decades before the National Park Service existed.',
+      routes:[
+        {name:'Generals Highway (CA-198)', detail:'46 miles of switchbacks from the Foothills entrance up to 7,000 ft. Connects Sequoia to Kings Canyon. <strong>RV/trailer length limits</strong> — check before towing.'},
+        {name:'Giant Forest Loop', detail:'Drive (or walk) the loop road through the densest grove of giants in the park. Stop at the Giant Forest Museum.'},
+        {name:'Crystal Cave Road', detail:'Spur down to a marble cavern (ticketed tour only, reserve ahead). Closed some years for restoration.'}
+      ],
+      things:[
+        {tag:'TREE', text:'<strong>General Sherman</strong> — the largest tree on Earth by volume. 275 ft tall, 36 ft thick at the base, ~2,200 years old. The reality is bigger than photos.'},
+        {tag:'WALK', text:'<strong>Congress Trail</strong> — 2 mi paved loop through the Senate + House groves. The quietest place in the park.'},
+        {tag:'CLIMB', text:'<strong>Moro Rock</strong> — 400 stone steps up a granite dome. 20-min round trip, 360° view of the Great Western Divide.'},
+        {tag:'DRIVE', text:'<strong>Tunnel Log</strong> — drive your car through a fallen 275-ft sequoia. Required photo.'},
+        {tag:'CAVE', text:'<strong>Crystal Cave</strong> — marble cavern with twisting passages. Tickets sell out — reserve weeks ahead at recreation.gov.'}
+      ]
+    }},
+  {name:'YOSEMITE',       state:'California',   days:'Day 14',      detail:'Tunnel View · Mist Trail',        onTrip:true,  img:null,
+    info:{
+      established:'1890',
+      area:'759,620 acres',
+      link:'https://www.nps.gov/yose/',
+      history:'Abraham Lincoln signed the Yosemite Grant in 1864 — the first time in history a government set aside land specifically to preserve its beauty for the public. <strong>John Muir</strong> arrived in 1868 and never really left; his writing and walks with Teddy Roosevelt here in 1903 led directly to the creation of the National Park Service. The Ahwahneechee (a Southern Sierra Miwok band) lived in the valley for thousands of years and were forced out by California militia in 1851 — their name for the valley was <em>Ahwahnee</em>, "place of a gaping mouth."',
+      routes:[
+        {name:'Yosemite Valley Loop', detail:'Drive or cycle the 12-mi loop on the valley floor. Hits Tunnel View, Bridalveil Fall, El Capitan Meadow, Yosemite Falls, and the Ahwahnee Hotel.'},
+        {name:'Glacier Point Road', detail:'Open late May–Oct. 16-mile spur to the 7,200-ft overlook of Half Dome. Sunset here is unreal.'},
+        {name:'Tioga Pass (CA-120)', detail:'9,945 ft. Crosses the Sierra to Tuolumne Meadows + Mono Lake. <strong>Often closed into June by snow</strong> — check caltrans.ca.gov.'}
+      ],
+      things:[
+        {tag:'VIEW', text:'<strong>Tunnel View</strong> — Half Dome, El Capitan, and Bridalveil Fall in one frame. Mandatory stop.'},
+        {tag:'HIKE', text:'<strong>Mist Trail to Vernal Falls</strong> — 3 mi RT, granite steps, you WILL get soaked. Pure magic in June.'},
+        {tag:'EPIC', text:'<strong>Upper Yosemite Falls</strong> — 7 mi RT, 2,700 ft up. Tallest waterfall in North America. Brutal, beautiful.'},
+        {tag:'EASY', text:'<strong>Lower Yosemite Falls</strong> — 1 mi paved loop. Wheelchair-accessible. Closest you get to the bottom of the falls.'},
+        {tag:'RESERVE', text:'<strong>Reservation required to enter</strong> in peak season — check nps.gov/yose before you drive in.'}
       ]
     }},
   {name:'YELLOWSTONE',    state:'Wyoming',      days:'Inspiration', detail:'Old Faithful · The first NP',     onTrip:false, img:PARK_IMG('Yellowstone.png'),
@@ -154,7 +231,7 @@ const NATIONAL_PARKS = [
     }},
 ];
 
-const PLANNED = {food:682, gas:568, lodging:767.70, activities:100, misc:76};
+const PLANNED = {food:717, gas:568, lodging:869, activities:100, misc:222};
 
 const PACKING = {
   'CORE ESSENTIALS':["Driver's licenses & ID",'Credit + debit cards','Cash ($200 emergency)','Phone + charger','Power bank (2)','Car charger','AAA card / Roadside number','Printed itinerary','Paper map (backup)','Insurance info'],
@@ -228,46 +305,48 @@ const DAYS = [
     ],
     protip:'Download offline maps for western routes and Spotify playlists before you lose cell signal in the plains.'},
 
-  {n:1, date:'Sat, May 30', title:'Hamilton → Madison, WI', subroute:'I-90 W via Buffalo, Cleveland, Chicago',
-    miles:'885', drive:'~13 hrs',  sleep:"Gwen's apartment",
-    // Waypoints: Hamilton → Syracuse → Buffalo → Cleveland → Toledo → Chicago → Madison
-    route:[[42.8270,-75.5446],[43.0481,-76.1474],[42.8864,-78.8784],[41.4993,-81.6944],[41.6528,-83.5379],[41.8781,-87.6298],[43.0731,-89.4012]],
-    timeline:['Dawn departure from Hamilton','I-90 W across NY — Buffalo, Erie PA','Cleveland for lunch · through Toledo into Indiana','Skirt Chicago on I-90/I-94','Cross into Wisconsin at dusk','Arrive Madison late — Gwen will be waiting'],
-    lodging:{name:"Gwen's apartment", meta:'Madison, WI · Free'},
-    food:{name:'Gas-station sushi is not an option', meta:'Budget $30 each for road meals'},
+  {n:1, date:'Sat, May 30', title:'Hamilton → Sandusky, OH', subroute:'I-90 W via PA → Jefferson, OH → Sandusky, OH',
+    miles:'464', drive:'~7.5 hrs + family lunch',  sleep:'Car camp · Sandusky, OH',
+    // Hamilton → Buffalo → Erie → Jefferson OH → Cleveland → Sandusky
+    route:[[42.8270,-75.5446],[42.8864,-78.8784],[42.1292,-80.0851],[41.7384,-80.7681],[41.4993,-81.6944],[41.4534,-82.7079]],
+    timeline:['Morning departure from Hamilton','I-90 W across NY into PA — Buffalo, Erie','~5 hrs to Jefferson, OH','LUNCH at Great Aunt & Uncle\'s house (415 Woodside Ave)','~2 hrs Jefferson → Sandusky, OH','Workout + shower at Planet Fitness','DINNER at Mekong Vietnamese (3321 Milan Rd)','Car camp in Sandusky — first night in the rig'],
+    lodging:{name:'Car camp · Sandusky, OH', meta:'First night in the rig · Free'},
+    food:{name:'Mekong Vietnamese for dinner', meta:'3321 Milan Rd · Family lunch in Jefferson'},
     suggestions:[
-      {tag:'Route',text:'Stay on <strong>I-90 W</strong> the whole way — it curves through Buffalo, Cleveland, Chicago, Madison.'},
-      {tag:'Rotate',text:'Switch drivers every 2 hrs. The passenger picks music and snacks.'},
-      {tag:'Scenic',text:'Cuyahoga Valley (OH) is 5 min off I-80 if you want to stretch legs in a real forest.'},
-      {tag:'Food',text:"Culver's or Portillo's in Indiana/Illinois for a Midwest fast-food rite of passage."}
+      {tag:'Family',text:'<strong>Lunch in Jefferson, OH</strong> with Great Aunt & Uncle — 415 Woodside Ave. Allow time.'},
+      {tag:'Shower',text:'<strong>Planet Fitness in Sandusky</strong> for the first night-before-car-camp shower. Premium membership covers both of you.'},
+      {tag:'Food',text:'<strong>Mekong Vietnamese</strong> for pho-and-banh-mi dinner before sleep. 3321 Milan Rd.'},
+      {tag:'Test',text:"First night in the car is the dress rehearsal. Note what's missing — you can still buy it in Madison."}
     ],
-    protip:'Podcast queue: load Radiolab, This American Life, and something trashy for hour 11 when your brain gives up.'},
+    protip:'Fill water jugs and ice the cooler in Sandusky. Tomorrow morning sets the pattern for the whole trip.'},
 
-  {n:2, date:'Sun, May 31', title:'Madison Rest Day', subroute:'Hang with Gwen, see the city',
-    miles:'<20', drive:'around town', sleep:"Gwen's",
+  {n:2, date:'Sun, May 31', title:'Sandusky → Madison, WI', subroute:'I-90 W through Indiana & Chicago into WI',
+    miles:'437', drive:'~7 hrs', sleep:"Gwen's apartment",
+    // Sandusky → Toledo → Chicago → Madison
+    route:[[41.4534,-82.7079],[41.6528,-83.5379],[41.8781,-87.6298],[43.0731,-89.4012]],
+    timeline:['Breakfast on the road from Sandusky','I-90 W through Toledo into Indiana','Skirt Chicago on I-90/I-94 — aim to be past O\'Hare before 3 PM','Cross into Wisconsin late afternoon','Arrive Madison evening — reunite with Gwen','Dinner with Gwen — Kara joins for the western leg'],
+    lodging:{name:"Gwen's apartment", meta:'Madison, WI · Free · Night 1 of 2'},
+    food:{name:'Road snacks + dinner with Gwen', meta:'~$40 total'},
+    suggestions:[
+      {tag:'Route',text:'Stay on <strong>I-90 W</strong> the whole way — Toledo, skirt Chicago, into Madison.'},
+      {tag:'Stop',text:"<strong>Lou Malnati's</strong> in Chicago for a deep-dish detour, OR <strong>Portillo's</strong> for a quick Italian beef."},
+      {tag:'Reunite',text:'<strong>Kara joins in Madison</strong> for the western leg — full crew of three from here through Zion.'},
+      {tag:'Rotate',text:'Switch drivers every 2 hrs. Passenger picks music and snacks.'}
+    ],
+    protip:'Chicago traffic is real — aim to be past O\'Hare before 3 PM or after 7 PM.'},
+
+  {n:3, date:'Mon, Jun 1', title:'Madison · Rest + Prep Day', subroute:'Hang with Gwen · gear up for SD',
+    miles:'<20', drive:'errands + walking', sleep:"Gwen's",
     route:null,
-    timeline:['Sleep in — you earned it','Brunch in Madison (Marigold or Short Stack Eats)','Walk State Street to the Capitol','Afternoon at Lake Mendota or Olbrich Botanical Gardens','Dinner with Gwen'],
-    lodging:{name:"Gwen's apartment", meta:'Free'},
-    food:{name:'Brunch + dinner in town', meta:'~$40 each'},
+    timeline:['Sleep in — you earned it','Brunch in Madison (Marigold or Short Stack Eats)','Walk State Street to the Capitol','Gear audit + Target/REI run for any last camping supplies','Groceries — 4 days of food in the cooler','Test pitch the car-camp setup in Gwen\'s driveway','Early dinner with Gwen, early bed'],
+    lodging:{name:"Gwen's apartment", meta:'Free · Night 2 of 2'},
+    food:{name:'Brunch out + grocery dinner', meta:'~$80 groceries split + brunch'},
     suggestions:[
       {tag:'See',text:'The <strong>Wisconsin State Capitol</strong> is free to visit and genuinely beautiful inside.'},
       {tag:'Eat',text:"Get a cheese curd fix at <strong>Graze</strong> or a beer garden — it's Wisconsin, lean in."},
-      {tag:'Walk',text:'Stroll the <strong>Memorial Union Terrace</strong> by Lake Mendota — iconic Madison spot.'},
-      {tag:'Chill',text:'No driving today. Let the body recover before the real camping starts.'}
-    ],
-    protip:'Ask Gwen for her local pick — she knows Madison better than Google ever will.'},
-
-  {n:3, date:'Mon, Jun 1', title:'Madison Prep Day', subroute:'Gear check for car camping',
-    miles:'<20', drive:'errands', sleep:"Gwen's",
-    route:null,
-    timeline:['Buy any last camping gear (Target or REI)','Groceries for the cooler (breakfast bars, fruit, canned beans, tortillas)','Test pitch the sleep setup in the car','Fuel + wash the car','Early dinner, early bed'],
-    lodging:{name:"Gwen's", meta:'Free'},
-    food:{name:'Grocery run + easy dinner', meta:'~$80 groceries split'},
-    suggestions:[
-      {tag:'Gear',text:'Do a full <strong>gear audit</strong> — sleeping bags, headlamps, matches, water jugs, camp stove.'},
-      {tag:'Food',text:"Buy <strong>4 days of food</strong> — you won't see a real grocery until Moab."},
-      {tag:'Car',text:'Oil check, tire pressure, wiper fluid. Tomorrow you enter the empty parts.'},
-      {tag:'Charge',text:'Power banks to 100%. Download playlists, podcasts, offline Google Maps for SD + UT.'}
+      {tag:'Gear',text:'Full <strong>gear audit</strong> — sleeping bags, headlamps, matches, water jugs, propane canisters, mesh window screens.'},
+      {tag:'Food',text:"Buy <strong>4 days of food</strong> — you won't see a real grocery until Moab. Overnight oats, taco fixings, snacks."},
+      {tag:'Charge',text:'Power banks to 100%. Download Spotify, podcasts, and offline Google Maps for SD + UT.'}
     ],
     protip:'Print a paper copy of the route and reservations. Phones die, signal disappears in South Dakota.'},
 
@@ -332,11 +411,11 @@ const DAYS = [
     protip:"Desert hiking rule: turn around when you've used 1/3 of your water. The way back is always harder."},
 
   {n:8, date:'Sat, Jun 6', title:'Moab → Bryce Canyon', subroute:'UT-128 → I-70 W → UT-24 → Scenic Byway 12',
-    miles:'272', drive:'~5.5 hrs', sleep:'Car camp near Bryce',
+    miles:'272', drive:'~5.5 hrs', sleep:"Tipi @ Ruby's Inn",
     // Moab → Green River → Hanksville → Capitol Reef → Boulder → Escalante → Bryce
     route:[[38.5733,-109.5498],[38.9937,-110.1595],[38.3722,-110.7137],[38.2915,-111.2615],[37.9133,-111.4203],[37.7705,-111.6027],[37.5930,-112.1871]],
-    timeline:['Leave Moab mid-morning','I-70 to UT-24 south through Capitol Reef','Scenic Byway 12 — one of the best drives in America','Lunch in Torrey or Boulder, UT','Arrive Bryce mid-afternoon, set up camp','Sunset at Sunset Point (the name earns it)'],
-    lodging:{name:'Car camp near Bryce', meta:'$15 · Dispersed camping'},
+    timeline:['Leave Moab mid-morning','I-70 to UT-24 south through Capitol Reef','Scenic Byway 12 — one of the best drives in America','Lunch in Torrey or Boulder, UT','Arrive Bryce mid-afternoon — check into the tipi at Ruby\'s Inn','Sunset at Sunset Point (the name earns it)'],
+    lodging:{name:"Tipi @ Ruby's Inn & Campgrounds", meta:'Bryce Canyon · BOOKED · Night 1 of 2'},
     food:{name:'Camp dinner', meta:'Foil-pack dinner over coals, ~$10'},
     suggestions:[
       {tag:'Drive',text:'<strong>Utah Scenic Byway 12</strong> is a designated All-American Road — Hogsback ridge, slickrock, aspens.'},
@@ -347,11 +426,11 @@ const DAYS = [
     protip:"Elevation hits some people hard. Go easy on alcohol, drink extra water, don't sprint up hills."},
 
   {n:9, date:'Sun, Jun 7', title:'Bryce Canyon Full Day', subroute:'Hike the hoodoos · scenic drive',
-    miles:'~40', drive:'in park', sleep:'Car camp',
+    miles:'~40', drive:'in park', sleep:"Tipi @ Ruby's Inn",
     // Camp → Sunrise Point → Navajo Loop → Rainbow Point → back
     route:[[37.5930,-112.1871],[37.6288,-112.1638],[37.6238,-112.1673],[37.4728,-112.2384],[37.5930,-112.1871]],
-    timeline:['Sunrise at Sunrise Point','Breakfast at camp','Navajo Loop + Queens Garden combo (2.9 mi, ~2 hrs — the classic hike)','Lunch + rest','Afternoon: drive the 18-mi scenic rd to Rainbow Point (9,115 ft)','Sunset + stargazing — Bryce has Dark Sky designation'],
-    lodging:{name:'Same car camp', meta:'$15'},
+    timeline:['Sunrise at Sunrise Point','Breakfast at the tipi','Navajo Loop + Queens Garden combo (2.9 mi, ~2 hrs — the classic hike)','Lunch + rest','Afternoon: drive the 18-mi scenic rd to Rainbow Point (9,115 ft)','Sunset + stargazing — Bryce has Dark Sky designation'],
+    lodging:{name:"Tipi @ Ruby's Inn & Campgrounds", meta:'BOOKED · Night 2 of 2'},
     food:{name:'Camp meals all day', meta:'~$12 total'},
     suggestions:[
       {tag:'Hike',text:'<strong>Navajo Loop → Queens Garden</strong> down into the hoodoos is THE Bryce hike. Go clockwise (down Wall Street first).'},
@@ -361,12 +440,12 @@ const DAYS = [
     ],
     protip:'Moonrise at Inspiration Point is other-worldly if your dates line up. Check the moon phase.'},
 
-  {n:10, date:'Mon, Jun 8', title:'Bryce → Zion ("THE ONE")', subroute:'UT-12 → US-89 S → UT-9 (Mt Carmel Hwy)',
-    miles:'86', drive:'~2 hrs', sleep:'"THE ONE" Airbnb',
-    // Bryce → Red Canyon → Mt Carmel Junction → Zion east entrance → Springdale
+  {n:10, date:'Mon, Jun 8', title:'Bryce → Zion', subroute:'UT-12 → US-89 S → UT-9 (Mt Carmel Hwy)',
+    miles:'86', drive:'~2 hrs', sleep:'Orderville Airbnb',
+    // Bryce → Red Canyon → Mt Carmel Junction → Zion east entrance → Springdale → Orderville
     route:[[37.5930,-112.1871],[37.7461,-112.3155],[37.2245,-112.6836],[37.2131,-112.8861],[37.1888,-112.9881],[37.1889,-113.0263]],
-    timeline:['Pack up camp slowly — short drive today','Drive through Red Canyon (scenic shortcut on UT-12)','South on US-89 then west on UT-9 into Zion','Stop at the Zion-Mt Carmel Tunnel viewpoints','Check into "THE ONE" Airbnb in Springdale','Afternoon: soft hike like Canyon Overlook (1 mi)','Dinner in Springdale'],
-    lodging:{name:'"THE ONE" Airbnb (Night 1 of 2)', meta:'$325/night · BOOKED'},
+    timeline:['Pack up the tipi slowly — short drive today','Drive through Red Canyon (scenic shortcut on UT-12)','South on US-89 then west on UT-9 into Zion','Stop at the Zion-Mt Carmel Tunnel viewpoints','3/4 day in Zion — Canyon Overlook (1 mi) or shuttle in','Check into the Orderville Airbnb after 4 PM','Run a load of laundry — washer + dryer onsite','Dinner in Springdale'],
+    lodging:{name:'Orderville Airbnb (Night 1 of 2)', meta:'245 W Pinyon Pine Dr · washer + dryer · BOOKED'},
     food:{name:'Dinner in Springdale', meta:"Oscar's Cafe or King's Landing"},
     suggestions:[
       {tag:'View',text:'<strong>Canyon Overlook Trail</strong> — 1 mi RT, easy, absurd view of Zion Canyon.'},
@@ -377,11 +456,11 @@ const DAYS = [
     protip:'Angels Landing needs a lottery permit — apply at recreation.gov. No permit = The Narrows instead (no permit needed from the bottom).'},
 
   {n:11, date:'Tue, Jun 9', title:'Zion Full Day', subroute:'Shuttle into the canyon',
-    miles:'~20', drive:'shuttle + short drives', sleep:'"THE ONE"',
+    miles:'~20', drive:'shuttle + short drives', sleep:'Orderville Airbnb',
     // Springdale → Visitor Center → Temple of Sinawava (end of canyon) → back
     route:[[37.1889,-113.0263],[37.2001,-112.9875],[37.2859,-112.9470],[37.1889,-113.0263]],
-    timeline:['Shuttle into the canyon (cars not allowed)','Big hike of the day — Narrows (wet, magical) OR Angels Landing (airy, legendary)','Lunch at Zion Lodge','Afternoon: Weeping Rock or Emerald Pools (easier)','Sunset watch from the Airbnb deck'],
-    lodging:{name:'"THE ONE" Airbnb (Night 2)', meta:'Same'},
+    timeline:['Shuttle into the canyon (cars not allowed)','Big hike of the day — Narrows (wet, magical) OR Angels Landing (airy, legendary)','Lunch at Zion Lodge','Afternoon: Weeping Rock or Emerald Pools (easier)','Sunset watch from the Airbnb deck in Orderville'],
+    lodging:{name:'Orderville Airbnb (Night 2 of 2)', meta:'245 W Pinyon Pine Dr · washer + dryer · BOOKED'},
     food:{name:'Picnic in the park + dinner out', meta:'~$50 total'},
     suggestions:[
       {tag:'Narrows',text:"Rent <strong>canyoneering boots + dry pants</strong> from Zion Outfitter ($30). Start early. Go until you're happy, turn back."},

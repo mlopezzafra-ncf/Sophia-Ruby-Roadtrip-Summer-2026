@@ -58,15 +58,19 @@ function initParks(){
   const grid = document.getElementById('parksGrid');
   NATIONAL_PARKS.forEach((p, idx) => {
     const el = document.createElement('div');
-    el.className = 'park-poster reveal';
+    el.className = 'park-poster reveal' + (p.img ? '' : ' no-image');
     el.setAttribute('role','button');
     el.setAttribute('tabindex','0');
     el.setAttribute('aria-label', 'Open info about ' + p.name + ' National Park');
+    const posterInner = p.img
+      ? `<img src="${p.img}" alt="${escapeHTML(p.name)} National Park poster" loading="lazy">
+         <div class="park-hint">↗ Tap for park info</div>`
+      : `<span class="pp-stamp">${escapeHTML(p.state)}</span>
+         <span class="pp-name">${escapeHTML(p.name)}</span>
+         <span class="pp-sub">${escapeHTML(p.detail)}</span>
+         <div class="park-hint">↗ Tap for park info</div>`;
     el.innerHTML = `
-      <div class="poster-wrap">
-        <img src="${p.img}" alt="${escapeHTML(p.name)} National Park poster" loading="lazy">
-        <div class="park-hint">↗ Tap for park info</div>
-      </div>
+      <div class="poster-wrap">${posterInner}</div>
       <div class="poster-caption">
         <span class="pc-title">${escapeHTML(p.name)}</span>
         <span class="pc-tagline">${escapeHTML(p.state)}</span>
@@ -102,9 +106,12 @@ function openParkModal(idx){
   ).join('');
   const content = document.getElementById('parkModalContent');
   if (!content) return;
+  const posterHTML = p.img
+    ? `<img class="park-modal-poster" src="${p.img}" alt="${escapeHTML(p.name)} poster">`
+    : `<div class="park-modal-poster placeholder"><span class="pp-name">${escapeHTML(p.name)}</span><span class="pp-sub">${escapeHTML(p.detail)}</span></div>`;
   content.innerHTML = `
     <div class="park-modal-header">
-      <img class="park-modal-poster" src="${p.img}" alt="${escapeHTML(p.name)} poster">
+      ${posterHTML}
       <div class="park-modal-titlebox">
         <span class="pm-kicker">America's Best Idea</span>
         <h2 id="parkModalTitle">${escapeHTML(p.name)}</h2>

@@ -77,7 +77,7 @@ const NATIONAL_PARKS = [
         {tag:'STARS', text:'Badlands is a designated Dark Sky park — astronomy programs run nightly in summer at the Cedar Pass Amphitheater.'}
       ]
     }},
-  {name:'ARCHES',         state:'Utah',         days:'Day 7',       detail:'Delicate Arch · Windows Section',  onTrip:true,  img:null,
+  {name:'ARCHES',         state:'Utah',         days:'Day 7',       detail:'Delicate Arch · Windows Section',  onTrip:true,  img:PARK_IMG('Arches.png'),
     info:{
       established:'1971 (Monument since 1929)',
       area:'76,679 acres',
@@ -96,7 +96,7 @@ const NATIONAL_PARKS = [
         {tag:'WATER', text:'<strong>1 gallon per person per day</strong> minimum in summer. The park has no drinking water past the visitor center.'}
       ]
     }},
-  {name:'BRYCE CANYON',   state:'Utah',         days:'Days 8–9',    detail:'Hoodoos · Navajo Loop',           onTrip:true,  img:null,
+  {name:'BRYCE CANYON',   state:'Utah',         days:'Days 8–9',    detail:'Hoodoos · Navajo Loop',           onTrip:true,  img:PARK_IMG('Bryce Canyon.png'),
     info:{
       established:'1928',
       area:'35,835 acres',
@@ -134,7 +134,7 @@ const NATIONAL_PARKS = [
         {tag:'EPIC', text:'<strong>Observation Point</strong> via East Mesa — 7 mi RT, looks straight DOWN onto Angels Landing.'}
       ]
     }},
-  {name:'SEQUOIA',        state:'California',   days:'Day 13',      detail:'General Sherman · Giant Forest',   onTrip:true,  img:null,
+  {name:'SEQUOIA',        state:'California',   days:'Day 13',      detail:'General Sherman · Giant Forest',   onTrip:true,  img:PARK_IMG('Sequoia.png'),
     info:{
       established:'1890 — second-oldest U.S. national park',
       area:'404,064 acres',
@@ -153,7 +153,7 @@ const NATIONAL_PARKS = [
         {tag:'CAVE', text:'<strong>Crystal Cave</strong> — marble cavern with twisting passages. Tickets sell out — reserve weeks ahead at recreation.gov.'}
       ]
     }},
-  {name:'YOSEMITE',       state:'California',   days:'Day 14',      detail:'Tunnel View · Mist Trail',        onTrip:true,  img:null,
+  {name:'YOSEMITE',       state:'California',   days:'Day 14',      detail:'Tunnel View · Mist Trail',        onTrip:true,  img:PARK_IMG('Yosemite.png'),
     info:{
       established:'1890',
       area:'759,620 acres',

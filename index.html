@@ -56,6 +56,36 @@
   </div>
 </header>
 
+<!-- ============ TRIP METER ============ -->
+<section class="meter-section" aria-label="Trip totals">
+  <div class="meter-wrap">
+    <div class="meter-stamp">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M5 11h11V8l5 4-5 4v-3H5v-2zm-2 8h2v-2H3v2zm0-12h2V5H3v2z"/>
+      </svg>
+      Day <span id="meterDayNum">--</span> of 19
+    </div>
+    <div class="meter-main">
+      <div class="odometer odometer-lg" id="meterMiles" aria-label="Miles driven"></div>
+      <div class="meter-label">Miles</div>
+    </div>
+    <div class="meter-secondary">
+      <div class="meter-sub">
+        <div class="odometer odometer-sm" id="meterGallons" aria-label="Gallons of gas used"></div>
+        <div class="meter-label">Gallons</div>
+      </div>
+      <div class="meter-sub">
+        <div class="odometer odometer-sm" id="meterSpend" aria-label="Dollars spent on gas"></div>
+        <div class="meter-label">Gas Spend</div>
+      </div>
+    </div>
+    <div class="meter-foot">
+      <span id="meterStatus">Loading totals…</span>
+      <a id="meterSheetLink" href="#" target="_blank" rel="noopener" style="display:none">📊 Update the sheet ↗</a>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="section-inner">
     <div class="section-head">

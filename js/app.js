@@ -1,6 +1,7 @@
 // ================= INIT (multi-page aware) =================
 // Each init function checks for its target element. Missing element = skip.
 document.addEventListener('DOMContentLoaded', () => {
+  initMeter();
   initCountdown();
   initStates();
   initParks();
@@ -19,6 +20,269 @@ function escapeHTML(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<'
 function storageGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
 function storageSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
 function fmtMoney(n){ if(n==null||isNaN(n)) return ''; return '$'+Number(n).toFixed(2).replace(/\.00$/,''); }
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  TRIP METER  ·  CONFIG  (edit these values whenever needed)             ║
+// ╠══════════════════════════════════════════════════════════════════════════╣
+// ║  The meter on the home page sums daily MILES / GALLONS / GAS $ from a   ║
+// ║  Google Sheet so the girls can update it from the road without any code ║
+// ║  changes or rebuilds.                                                   ║
+// ║                                                                          ║
+// ║  HOW TO HOOK UP THE SHEET (one-time):                                   ║
+// ║   1.  Open the Google Sheet.                                            ║
+// ║   2.  File → Share → Publish to web                                     ║
+// ║   3.  Pick the daily-totals tab. Choose format = CSV. Click Publish.    ║
+// ║   4.  Copy the URL it gives you and paste it into `publishedCsvUrl`     ║
+// ║       below.  It will look like:                                        ║
+// ║       https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&output=csv ║
+// ║                                                                          ║
+// ║  EXPECTED SHEET LAYOUT (1 row per day, first row is the header):        ║
+// ║   | Date        | Miles today | Gallons today | Gas $ today |           ║
+// ║   | 2026-05-30  |       464   |     14.5      |      50.80  |           ║
+// ║   | 2026-05-31  |       437   |     13.7      |      46.40  |           ║
+// ║                                                                          ║
+// ║  Extra columns are ignored. Blank rows are skipped. Currency symbols    ║
+// ║  ($, commas) are stripped from values automatically.                    ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+const METER_CONFIG = {
+  // PASTE the Google Sheets "Publish to web" CSV URL here once it exists.
+  // Leave blank to use the fallback totals below.
+  publishedCsvUrl: '',
+
+  // Optional: link to the editable sheet, shown as "Update the sheet ↗"
+  // under the meter so the girls can jump straight to data entry.
+  sheetEditUrl: 'https://docs.google.com/spreadsheets/d/1CQc1tZBKmu5vxMcTdc5BwIlwGiw3pou4gAnm8RJFwI4/edit?usp=sharing',
+
+  // Trip basics — rarely change.
+  tripStart:     '2026-05-29',  // Day 0 = Ruby arrives in Hamilton
+  tripTotalDays: 19,            // 19 days, numbered 0–18
+
+  // Fallback totals — shown if the CSV fetch fails, the sheet is empty,
+  // or `publishedCsvUrl` is blank. Update these to the last-known good
+  // numbers so the meter never sits at zero by accident.
+  fallback: { miles: 0, gallons: 0, spend: 0 }
+};
+
+// ================= TRIP METER =================
+async function initMeter(){
+  const milesEl = document.getElementById('meterMiles');
+  if (!milesEl) return; // home-page only
+  const gallonsEl = document.getElementById('meterGallons');
+  const spendEl   = document.getElementById('meterSpend');
+  const dayEl     = document.getElementById('meterDayNum');
+  const statusEl  = document.getElementById('meterStatus');
+  const sheetLink = document.getElementById('meterSheetLink');
+
+  // Build the digit drums for each odometer
+  buildOdometerDrums(milesEl,   6, 0);            // 6 integer digits, e.g. 004,454
+  buildOdometerDrums(gallonsEl, 5, 1);            // 4 integer + 1 decimal, e.g. 142.0
+  buildOdometerDrums(spendEl,   5, 0, '$');       // 5 integer digits with $ prefix
+
+  // Day X of 19 — start with date-math; CSV may refine it below
+  if (dayEl) dayEl.textContent = computeDayNumber();
+
+  // Wire the "Update the sheet" link if a URL is configured
+  if (sheetLink && METER_CONFIG.sheetEditUrl){
+    sheetLink.href = METER_CONFIG.sheetEditUrl;
+    sheetLink.style.display = '';
+  }
+
+  // Pull live totals from the published-CSV; fall back gracefully on failure
+  let totals = { ...METER_CONFIG.fallback };
+  let source = 'fallback values';
+  let loggedDays = 0;
+  if (METER_CONFIG.publishedCsvUrl){
+    try {
+      const resp = await fetch(METER_CONFIG.publishedCsvUrl, {cache:'no-store'});
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const text = await resp.text();
+      const parsed = parseSheetCsv(text);
+      if (parsed.rowCount > 0){
+        totals = { miles: parsed.miles, gallons: parsed.gallons, spend: parsed.spend };
+        loggedDays = parsed.rowCount;
+        source = `${loggedDays} day${loggedDays===1?'':'s'} logged`;
+      } else {
+        source = 'sheet is empty — using fallback';
+      }
+    } catch (e){
+      console.warn('Meter: sheet fetch failed,', e);
+      source = 'sheet unreachable — using fallback';
+    }
+  } else {
+    source = 'CSV URL not configured — using fallback';
+  }
+
+  // If the sheet has data, prefer logged-days for "Day X of 19" (more accurate
+  // to actual progress than a pure date calculation, especially mid-trip).
+  if (loggedDays > 0 && dayEl){
+    // Logged days = number of completed days. Display 1-indexed for users.
+    dayEl.textContent = Math.min(loggedDays, METER_CONFIG.tripTotalDays);
+  }
+
+  // Status footer line
+  if (statusEl){
+    const stamp = new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+    statusEl.textContent = `Updated ${stamp} · ${source}`;
+  }
+
+  // Animate the counters up from 0 (staggered)
+  animateOdometer(milesEl,   totals.miles,   1800,   0, 0);
+  animateOdometer(gallonsEl, totals.gallons, 1800, 200, 1);
+  animateOdometer(spendEl,   totals.spend,   1800, 400, 0);
+}
+
+function computeDayNumber(){
+  // Returns 1-indexed day-of-trip, or 0 if pre-trip, or tripTotalDays if past end.
+  const today = new Date();
+  const start = new Date(METER_CONFIG.tripStart + 'T00:00:00');
+  const diffDays = Math.floor((today - start) / 86400000);
+  if (diffDays < 0) return 0;
+  return Math.min(diffDays + 1, METER_CONFIG.tripTotalDays);
+}
+
+function buildOdometerDrums(el, totalDigits, decimals, prefix){
+  if (!el) return;
+  el.innerHTML = '';
+  if (prefix){
+    const p = document.createElement('span');
+    p.className = 'od-prefix';
+    p.textContent = prefix;
+    el.appendChild(p);
+  }
+  const integerDigits = decimals > 0 ? totalDigits - decimals : totalDigits;
+  // Integer part with comma separators every 3 from the right
+  for (let i = 0; i < integerDigits; i++){
+    el.appendChild(makeOdometerCell());
+    const fromRight = integerDigits - 1 - i;
+    if (fromRight > 0 && fromRight % 3 === 0){
+      const sep = document.createElement('span');
+      sep.className = 'od-sep';
+      sep.textContent = ',';
+      el.appendChild(sep);
+    }
+  }
+  // Decimal part
+  if (decimals > 0){
+    const dot = document.createElement('span');
+    dot.className = 'od-sep';
+    dot.textContent = '.';
+    el.appendChild(dot);
+    for (let i = 0; i < decimals; i++){
+      el.appendChild(makeOdometerCell());
+    }
+  }
+  // Stash decimals on the element so setOdometer() can read it
+  el.dataset.decimals = String(decimals || 0);
+}
+
+function makeOdometerCell(){
+  const cell = document.createElement('span');
+  cell.className = 'od-cell';
+  const drum = document.createElement('span');
+  drum.className = 'od-drum';
+  for (let d = 0; d <= 9; d++){
+    const dig = document.createElement('span');
+    dig.textContent = String(d);
+    drum.appendChild(dig);
+  }
+  // Duplicate 0 at end so wrap-around (9 → 0) animates smoothly downward
+  const wrap = document.createElement('span');
+  wrap.textContent = '0';
+  drum.appendChild(wrap);
+  cell.appendChild(drum);
+  return cell;
+}
+
+function setOdometer(el, value){
+  if (!el) return;
+  const decimals = parseInt(el.dataset.decimals || '0', 10);
+  const cells = el.querySelectorAll('.od-cell');
+  if (!cells.length) return;
+  // Build the digit string (no separators) padded to the cell count
+  let digitsStr;
+  if (decimals > 0){
+    digitsStr = Math.max(0, value).toFixed(decimals).replace('.', '');
+  } else {
+    digitsStr = String(Math.max(0, Math.floor(value)));
+  }
+  digitsStr = digitsStr.padStart(cells.length, '0').slice(-cells.length);
+  cells.forEach((cell, i) => {
+    const d = parseInt(digitsStr[i], 10) || 0;
+    const drum = cell.querySelector('.od-drum');
+    const h = cell.clientHeight;
+    if (h > 0 && drum){
+      drum.style.transform = `translateY(-${d * h}px)`;
+    }
+  });
+}
+
+function animateOdometer(el, target, durationMs, delayMs, decimals){
+  if (!el) return;
+  // decimals param kept for API compat — actual value is stored on the element
+  void decimals;
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const run = () => {
+    if (reduced){
+      setOdometer(el, target);
+      return;
+    }
+    const startTime = performance.now();
+    function tick(now){
+      const t = Math.min(1, (now - startTime) / durationMs);
+      const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setOdometer(el, target * ease);
+      if (t < 1) requestAnimationFrame(tick);
+      else setOdometer(el, target);
+    }
+    requestAnimationFrame(tick);
+  };
+  if (delayMs > 0) setTimeout(run, delayMs);
+  else run();
+}
+
+function parseSheetCsv(text){
+  // Sums columns 2/3/4 (Miles / Gallons / Gas $) of every row with a non-blank
+  // first column. Header row is auto-detected and skipped.
+  const lines = String(text || '').replace(/^﻿/, '').trim().split(/\r?\n/);
+  let miles = 0, gallons = 0, spend = 0, rowCount = 0;
+  let startIdx = 0;
+  if (lines.length > 0){
+    const first = parseCsvLine(lines[0]).map(c => c.trim().toLowerCase());
+    // Header detected if no numeric values in cols 2/3/4
+    const looksNumeric = (s) => s && !isNaN(parseFloat(s.replace(/[$,\s]/g,'')));
+    if (!(looksNumeric(first[1]) || looksNumeric(first[2]) || looksNumeric(first[3]))){
+      startIdx = 1;
+    }
+  }
+  for (let i = startIdx; i < lines.length; i++){
+    const cells = parseCsvLine(lines[i]);
+    if (cells.length < 2) continue;
+    if (!cells[0] || !cells[0].trim()) continue;
+    const m = parseFloat((cells[1]||'').replace(/[$,\s]/g,'')) || 0;
+    const g = parseFloat((cells[2]||'').replace(/[$,\s]/g,'')) || 0;
+    const s = parseFloat((cells[3]||'').replace(/[$,\s]/g,'')) || 0;
+    miles += m; gallons += g; spend += s; rowCount++;
+  }
+  return { miles, gallons, spend, rowCount };
+}
+
+function parseCsvLine(line){
+  const cells = [];
+  let cur = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++){
+    const ch = line[i];
+    if (ch === '"'){
+      if (inQuotes && line[i+1] === '"'){ cur += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes){
+      cells.push(cur); cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  cells.push(cur);
+  return cells;
+}
 
 // ================= COUNTDOWN =================
 function initCountdown(){

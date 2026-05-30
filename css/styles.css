@@ -925,3 +925,134 @@
     .rl-block-title{font-size:22px;gap:10px}
     .rl-icon{width:30px;height:30px;padding:4px}
   }
+
+  /* ============ CENTRAL METER (home page) ============ */
+  .meter-section{
+    padding:36px 20px 12px;
+    background:linear-gradient(180deg, rgba(232,180,76,.06) 0%, transparent 100%);
+  }
+  .meter-wrap{
+    max-width:920px;margin:0 auto;
+    background:var(--paper-light);
+    border:10px solid transparent;
+    border-image:linear-gradient(135deg, var(--wood-light) 0%, var(--wood) 50%, var(--wood-dark) 100%) 1;
+    padding:28px 24px 24px;
+    box-shadow:var(--shadow-lg);
+    text-align:center;position:relative;
+  }
+  .meter-wrap::before, .meter-wrap::after{
+    content:'';position:absolute;width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(circle, var(--wood-dark) 30%, var(--wood) 60%, transparent 70%);
+  }
+  .meter-wrap::before{top:-4px;left:-4px}
+  .meter-wrap::after{bottom:-4px;right:-4px}
+  .meter-stamp{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--rust);color:var(--paper);
+    font-family:'Alfa Slab One';font-size:11px;font-weight:normal;
+    letter-spacing:.16em;text-transform:uppercase;
+    padding:5px 14px;margin-bottom:18px;
+    transform:rotate(-1deg);
+    box-shadow:2px 2px 0 var(--navy);
+  }
+  .meter-stamp svg{width:14px;height:14px}
+  .meter-main{margin-bottom:22px}
+  .meter-label{
+    font-family:'Alfa Slab One',serif;font-weight:normal;font-size:11px;
+    color:var(--ink-soft);letter-spacing:.22em;text-transform:uppercase;
+    margin-top:10px;
+  }
+  .meter-secondary{
+    display:flex;justify-content:center;align-items:flex-start;
+    gap:32px;flex-wrap:wrap;
+  }
+  .meter-sub{display:flex;flex-direction:column;align-items:center}
+  .meter-foot{
+    margin-top:18px;padding-top:14px;
+    border-top:1px dashed rgba(74,48,24,.25);
+    font-size:11.5px;color:var(--ink-soft);
+    display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .meter-foot a{
+    color:var(--rust);text-decoration:none;font-weight:700;
+    letter-spacing:.05em;
+  }
+  .meter-foot a:hover{text-decoration:underline}
+
+  /* The odometer itself — chrome/brass frame, recessed digit drums */
+  .odometer{
+    display:inline-flex;align-items:stretch;gap:2px;
+    background:
+      linear-gradient(180deg, #d9c598 0%, #a88f5d 45%, #8b7340 55%, #c4ad7b 100%);
+    padding:5px 6px;
+    border:1.5px solid #5a4a25;
+    border-radius:6px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.55),
+      inset 0 -1px 0 rgba(0,0,0,.35),
+      0 5px 14px rgba(0,0,0,.28),
+      0 1px 0 rgba(255,255,255,.4);
+    line-height:1;
+  }
+  .odometer-lg{font-size:52px}
+  .odometer-sm{font-size:30px}
+  .od-cell{
+    display:inline-block;
+    width:.66em;height:1em;
+    background:linear-gradient(180deg, #0d0d0c 0%, #1c1c1a 50%, #0d0d0c 100%);
+    border:1px solid #000;
+    border-radius:2px;
+    overflow:hidden;
+    box-shadow:
+      inset 0 3px 5px rgba(0,0,0,.7),
+      inset 0 -1px 0 rgba(255,255,255,.06),
+      inset 0 0 0 1px rgba(255,255,255,.04);
+    position:relative;
+  }
+  .od-cell::after{
+    /* horizontal highlight line across the drum, like a real odometer window */
+    content:'';position:absolute;left:0;right:0;top:50%;height:1px;
+    background:rgba(255,255,255,.08);pointer-events:none;
+  }
+  .od-drum{
+    display:block;
+    font-family:'SF Mono','Menlo','Monaco','Consolas','Courier New',monospace;
+    font-weight:700;
+    color:#f3e9d2;
+    text-shadow:0 1px 0 rgba(0,0,0,.6);
+    transition:transform .14s cubic-bezier(.4,0,.2,1);
+    will-change:transform;
+    font-variant-numeric:tabular-nums;
+  }
+  .od-drum > span{
+    display:block;height:1em;line-height:1em;text-align:center;
+  }
+  .od-sep{
+    display:inline-flex;align-items:flex-end;justify-content:center;
+    width:.28em;
+    font-family:'SF Mono','Menlo','Monaco','Consolas','Courier New',monospace;
+    font-weight:700;color:#3a2f15;
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+    padding-bottom:.05em;
+  }
+  .od-prefix{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:0 4px 0 6px;
+    font-family:'SF Mono','Menlo','Monaco','Consolas','Courier New',monospace;
+    font-weight:700;color:#f3e9d2;
+    background:linear-gradient(180deg, #0d0d0c 0%, #1c1c1a 50%, #0d0d0c 100%);
+    border:1px solid #000;border-radius:2px;
+    box-shadow:inset 0 3px 5px rgba(0,0,0,.7);
+    text-shadow:0 1px 0 rgba(0,0,0,.6);
+  }
+
+  @media (max-width:680px){
+    .meter-wrap{padding:22px 16px 18px;border-width:8px}
+    .odometer-lg{font-size:38px}
+    .odometer-sm{font-size:22px}
+    .meter-secondary{gap:18px}
+    .meter-label{font-size:10px;letter-spacing:.18em}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .od-drum{transition:none}
+  }

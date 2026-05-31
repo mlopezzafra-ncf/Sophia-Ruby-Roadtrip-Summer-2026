@@ -90,66 +90,171 @@ async function initMeter(){
   const dayEl     = document.getElementById('meterDayNum');
   const statusEl  = document.getElementById('meterStatus');
   const sheetLink = document.getElementById('meterSheetLink');
+  const dateInput = document.getElementById('meterEntryDate');
 
   // Build the digit drums for each odometer
   buildOdometerDrums(milesEl,   6, 0);            // 6 integer digits, e.g. 004,454
   buildOdometerDrums(gallonsEl, 5, 1);            // 4 integer + 1 decimal, e.g. 142.0
   buildOdometerDrums(spendEl,   5, 0, '$');       // 5 integer digits with $ prefix
 
-  // Day X of 19 — start with date-math; CSV may refine it below
+  // Day X of 19 — start with date-math; CSV/local data may refine it below
   if (dayEl) dayEl.textContent = computeDayNumber();
 
-  // Wire the "Update" CTA link if a URL is configured
+  // Pre-fill the date picker to today
+  if (dateInput && !dateInput.value){
+    const t = new Date();
+    const iso = t.getFullYear() + '-' + String(t.getMonth()+1).padStart(2,'0') + '-' + String(t.getDate()).padStart(2,'0');
+    dateInput.value = iso;
+  }
+
+  // Wire the "Update" CTA link if a URL is configured (kept for the
+  // power-user / sheet-of-record workflow — purely optional now)
   if (sheetLink && METER_CONFIG.sheetEditUrl){
     sheetLink.href = METER_CONFIG.sheetEditUrl;
     sheetLink.textContent = METER_CONFIG.sheetEditLabel || '✏ Update totals ↗';
     sheetLink.style.display = '';
   }
 
-  // Pull live totals from the published-CSV; fall back gracefully on failure
+  // PRIMARY SOURCE: localStorage entries the user has logged on the live site.
+  // These match how the budget expense log works — entered in the browser,
+  // persisted locally, included in Export/Import.
+  const local = loadMeterLog();
+
   let totals = { ...METER_CONFIG.fallback };
   let source = 'fallback values';
   let loggedDays = 0;
-  if (METER_CONFIG.publishedCsvUrl){
+
+  if (local.length){
+    const sum = local.reduce((a, r) => ({
+      miles:   a.miles   + (r.miles   || 0),
+      gallons: a.gallons + (r.gallons || 0),
+      spend:   a.spend   + (r.spend   || 0)
+    }), {miles:0, gallons:0, spend:0});
+    totals = sum;
+    loggedDays = local.length;
+    source = `${loggedDays} day${loggedDays===1?'':'s'} logged on this device`;
+  } else if (METER_CONFIG.publishedCsvUrl){
+    // No local entries yet — try the CSV (works for the seed/baseline path
+    // and the legacy Google Sheets workflow).
     try {
       const resp = await fetch(METER_CONFIG.publishedCsvUrl, {cache:'no-store'});
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const text = await resp.text();
       const parsed = parseSheetCsv(text);
-      // Use "filledRowCount" so that pre-populated date-only rows in the
-      // repo CSV don't get counted as logged days.
       if (parsed.filledRowCount > 0){
         totals = { miles: parsed.miles, gallons: parsed.gallons, spend: parsed.spend };
         loggedDays = parsed.filledRowCount;
-        source = `${loggedDays} day${loggedDays===1?'':'s'} logged`;
+        source = `${loggedDays} day${loggedDays===1?'':'s'} logged · CSV seed`;
       } else {
-        source = 'no totals logged yet — fill in today\'s row';
+        source = 'no totals logged yet — fill in today below';
       }
     } catch (e){
-      console.warn('Meter: sheet fetch failed,', e);
-      source = 'sheet unreachable — using fallback';
+      console.warn('Meter: CSV fetch failed,', e);
+      source = 'CSV unreachable — using fallback';
     }
   } else {
-    source = 'CSV URL not configured — using fallback';
+    source = 'no source configured — using fallback';
   }
 
-  // If the sheet has data, prefer logged-days for "Day X of 19" (more accurate
-  // to actual progress than a pure date calculation, especially mid-trip).
-  if (loggedDays > 0 && dayEl){
-    // Logged days = number of completed days. Display 1-indexed for users.
-    dayEl.textContent = Math.min(loggedDays, METER_CONFIG.tripTotalDays);
-  }
+  // "Day X of 19" always tracks the actual calendar date — entries logged
+  // is a separate concept and surfaces in the status line below.
 
-  // Status footer line
   if (statusEl){
     const stamp = new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
     statusEl.textContent = `Updated ${stamp} · ${source}`;
   }
 
-  // Animate the counters up from 0 (staggered)
+  // Animate the counters up from current display to target (staggered)
   animateOdometer(milesEl,   totals.miles,   1800,   0, 0);
   animateOdometer(gallonsEl, totals.gallons, 1800, 200, 1);
   animateOdometer(spendEl,   totals.spend,   1800, 400, 0);
+
+  renderMeterLog();
+}
+
+// --- Live entry / log (browser localStorage, same pattern as expenses) ---
+function loadMeterLog(){
+  try { return JSON.parse(storageGet('meter-log') || '[]'); } catch { return []; }
+}
+function saveMeterLog(log){ storageSet('meter-log', JSON.stringify(log)); }
+
+function addMeterEntry(){
+  const date    = (document.getElementById('meterEntryDate').value || '').trim();
+  const miles   = parseFloat(document.getElementById('meterEntryMiles').value)   || 0;
+  const gallons = parseFloat(document.getElementById('meterEntryGallons').value) || 0;
+  const spend   = parseFloat(document.getElementById('meterEntrySpend').value)   || 0;
+  if (!date){ alert('Pick a date first.'); return; }
+  if (miles + gallons + spend <= 0){ alert('Enter at least one number (miles, gallons, or gas $).'); return; }
+  const log = loadMeterLog();
+  // One row per date — overwrite if the date already exists
+  const existing = log.findIndex(r => r.date === date);
+  const entry = { date, miles, gallons, spend, ts: Date.now() };
+  if (existing >= 0) log[existing] = entry; else log.push(entry);
+  log.sort((a,b) => a.date.localeCompare(b.date));
+  saveMeterLog(log);
+  // Reset just the number inputs (keep the date so they can fix typos)
+  ['meterEntryMiles','meterEntryGallons','meterEntrySpend'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  refreshMeterFromLog();
+  renderMeterLog();
+}
+
+function deleteMeterEntry(idx){
+  const log = loadMeterLog();
+  log.splice(idx, 1);
+  saveMeterLog(log);
+  refreshMeterFromLog();
+  renderMeterLog();
+}
+
+function refreshMeterFromLog(){
+  const log = loadMeterLog();
+  const milesEl   = document.getElementById('meterMiles');
+  const gallonsEl = document.getElementById('meterGallons');
+  const spendEl   = document.getElementById('meterSpend');
+  const dayEl     = document.getElementById('meterDayNum');
+  const statusEl  = document.getElementById('meterStatus');
+  if (!milesEl) return;
+  const totals = log.reduce((a, r) => ({
+    miles:   a.miles   + (r.miles   || 0),
+    gallons: a.gallons + (r.gallons || 0),
+    spend:   a.spend   + (r.spend   || 0)
+  }), {miles:0, gallons:0, spend:0});
+  animateOdometer(milesEl,   totals.miles,   900,   0, 0);
+  animateOdometer(gallonsEl, totals.gallons, 900,  80, 1);
+  animateOdometer(spendEl,   totals.spend,   900, 160, 0);
+  if (dayEl) dayEl.textContent = computeDayNumber();
+  if (statusEl){
+    const stamp = new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+    statusEl.textContent = log.length
+      ? `Updated ${stamp} · ${log.length} day${log.length===1?'':'s'} logged on this device`
+      : `Updated ${stamp} · no entries yet — log today's totals below`;
+  }
+}
+
+function renderMeterLog(){
+  const list = document.getElementById('meterLogList');
+  if (!list) return;
+  const log = loadMeterLog();
+  if (!log.length){
+    list.innerHTML = '<div class="meter-log-empty">No days logged yet. Add today\'s miles, gallons, and gas spend above.</div>';
+    return;
+  }
+  // Most recent first
+  list.innerHTML = log.slice().reverse().map((r, revIdx) => {
+    const realIdx = log.length - 1 - revIdx;
+    const parts = [
+      r.miles   ? `<strong>${r.miles.toLocaleString()}</strong> mi`              : '',
+      r.gallons ? `<strong>${r.gallons.toFixed(1)}</strong> gal`                  : '',
+      r.spend   ? `<strong>${fmtMoney(r.spend)}</strong>`                         : ''
+    ].filter(Boolean).join(' · ');
+    return `<div class="meter-log-row">
+      <span class="ml-date">${escapeHTML(r.date)}</span>
+      <span class="ml-vals">${parts}</span>
+      <button class="ml-del" onclick="deleteMeterEntry(${realIdx})" title="Remove">×</button>
+    </div>`;
+  }).join('');
 }
 
 function computeDayNumber(){
@@ -249,7 +354,9 @@ function animateOdometer(el, target, durationMs, delayMs, decimals){
       return;
     }
     const startTime = performance.now();
+    let stopped = false;
     function tick(now){
+      if (stopped) return;
       const t = Math.min(1, (now - startTime) / durationMs);
       const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
       setOdometer(el, target * ease);
@@ -257,6 +364,9 @@ function animateOdometer(el, target, durationMs, delayMs, decimals){
       else setOdometer(el, target);
     }
     requestAnimationFrame(tick);
+    // Safety net: guarantee the final value lands even if RAF gets throttled
+    // (background tab, embedded iframe, headless preview, etc.)
+    setTimeout(() => { stopped = true; setOdometer(el, target); }, durationMs + 80);
   };
   if (delayMs > 0) setTimeout(run, delayMs);
   else run();
@@ -1052,7 +1162,7 @@ function initReveals(){
 // ================= EXPORT/IMPORT =================
 function exportData(){
   const data={};
-  const keys=['expenses','packing'];
+  const keys=['expenses','packing','meter-log'];
   for(let i=0;i<19;i++){ keys.push(`playlist-day-${i}`,`spotify-day-${i}`); }
   for(const k of keys){ const v=storageGet(k); if(v) data[k]=v; }
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});

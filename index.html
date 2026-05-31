@@ -83,6 +83,19 @@
       <span id="meterStatus">Loading totals…</span>
       <a id="meterSheetLink" href="#" target="_blank" rel="noopener" style="display:none">📊 Update the sheet ↗</a>
     </div>
+
+    <!-- Inline daily-log form (same pattern as the budget expense logger) -->
+    <div class="meter-log">
+      <h4 class="meter-log-title">Log today's totals</h4>
+      <div class="meter-log-form">
+        <input id="meterEntryDate" type="date" aria-label="Date">
+        <input id="meterEntryMiles" type="number" step="0.1" min="0" placeholder="Miles">
+        <input id="meterEntryGallons" type="number" step="0.1" min="0" placeholder="Gallons">
+        <input id="meterEntrySpend" type="number" step="0.01" min="0" placeholder="Gas $">
+        <button type="button" onclick="addMeterEntry()">+ Log day</button>
+      </div>
+      <div class="meter-log-list" id="meterLogList"></div>
+    </div>
   </div>
 </section>
 

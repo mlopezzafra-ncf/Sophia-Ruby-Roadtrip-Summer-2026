@@ -1113,3 +1113,55 @@
   @media (prefers-reduced-motion: reduce){
     .today-badge{animation:none}
   }
+
+  /* Meter inline-log form (matches the budget expense logger pattern) */
+  .meter-log{
+    margin-top:18px;padding-top:18px;
+    border-top:1px dashed rgba(74,48,24,.25);
+    text-align:left;
+  }
+  .meter-log-title{
+    font-family:'Alfa Slab One',serif;font-weight:normal;
+    font-size:13px;color:var(--rust);letter-spacing:.16em;
+    text-transform:uppercase;margin-bottom:10px;text-align:center;
+  }
+  .meter-log-form{
+    display:grid;
+    grid-template-columns:140px 1fr 1fr 1fr auto;
+    gap:8px;margin-bottom:12px;
+  }
+  .meter-log-form input{
+    padding:9px 11px;border:1.5px solid var(--wood);
+    background:var(--paper);font-family:'Outfit';font-size:14px;
+    color:var(--ink);min-width:0;
+  }
+  .meter-log-form input:focus{outline:none;border-color:var(--rust)}
+  .meter-log-form button{
+    background:var(--rust);color:var(--paper);border:none;
+    padding:0 16px;font-weight:700;font-size:12px;
+    letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  }
+  .meter-log-form button:hover{background:#A43821}
+  @media (max-width:680px){
+    .meter-log-form{grid-template-columns:1fr 1fr;}
+    .meter-log-form input[type=date]{grid-column:1/-1}
+    .meter-log-form button{grid-column:1/-1;padding:12px}
+  }
+  .meter-log-list{display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;padding-right:4px}
+  .meter-log-row{
+    display:grid;grid-template-columns:90px 1fr 28px;gap:10px;align-items:center;
+    padding:8px 12px;background:var(--paper);border-left:3px solid var(--gold-deep);
+    font-size:13px;
+  }
+  .meter-log-row .ml-date{font-family:'Fraunces';font-weight:700;color:var(--navy)}
+  .meter-log-row .ml-vals{color:var(--ink-soft)}
+  .meter-log-row .ml-vals strong{color:var(--ink)}
+  .meter-log-row .ml-del{
+    background:transparent;border:none;color:var(--ink-soft);
+    cursor:pointer;font-size:18px;line-height:1;padding:0 4px;
+  }
+  .meter-log-row .ml-del:hover{color:var(--rust)}
+  .meter-log-empty{
+    font-size:12.5px;color:var(--ink-soft);font-style:italic;
+    text-align:center;padding:10px;
+  }

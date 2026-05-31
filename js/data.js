@@ -231,7 +231,7 @@ const NATIONAL_PARKS = [
     }},
 ];
 
-const PLANNED = {food:717, gas:568, lodging:869, activities:100, misc:222};
+const PLANNED = {food:717, gas:568, lodging:781, activities:100, misc:222};
 
 // Structured packing data from the spreadsheet.
 // Each item: { item, buy (need to purchase), pack (need to pack), both (one for both ppl), who, qty, note, link }
@@ -289,6 +289,20 @@ const PACKING = {
   ],
   'EXTRAS':[
     {item:'Hammock + Hammock Straps', pack:true}
+  ],
+  "GOOBER (KARA'S LIST)":[
+    {item:'Hiking Shoes',                                  who:'Kara'},
+    {item:'Large, Lightweight Water Bottle',               who:'Kara'},
+    {item:'Layers for ~30–40°F weather',                   who:'Kara', note:'Bryce camp nights drop to the 30s'},
+    {item:'Hiking Clothes for hot weather',                who:'Kara', note:'Moab + Zion hit 90–100°F'},
+    {item:'Sunnies + Hat',                                 who:'Kara'},
+    {item:'Personal Hygiene',                              who:'Kara'},
+    {item:'Other Comfy Clothes',                           who:'Kara'},
+    {item:'Hiking Pack (if you have one)',                 who:'Kara'},
+    {item:'Portable Charger',                              who:'Kara'},
+    {item:'Electrolytes (recommended)',                    who:'Kara', note:'Desert hiking — bring some'},
+    {item:"Rebecca's Wrath… duh",                          who:'Kara', note:'Already established as essential'},
+    {item:'Towel',                                         who:'Kara'}
   ]
 };
 
@@ -386,10 +400,11 @@ const DAYS = [
   {n:3, date:'Mon, Jun 1', title:'Madison · Rest + Prep Day', subroute:'Hang with Gwen · gear up for SD',
     miles:'<20', drive:'errands + walking', sleep:"Gwen's",
     route:null,
-    timeline:['Sleep in — you earned it','Brunch in Madison (Marigold or Short Stack Eats)','Walk State Street to the Capitol','Gear audit + Target/REI run for any last camping supplies','Groceries — 4 days of food in the cooler','Test pitch the car-camp setup in Gwen\'s driveway','Early dinner with Gwen, early bed'],
+    timeline:['Sleep in — you earned it','Brunch in Madison (Marigold or Short Stack Eats)','<strong>Pick up Kara + Rebecca\'s Wrath at MKE — they land 10:55 AM</strong>','Walk State Street to the Capitol','Gear audit + Target/REI run for any last camping supplies','Groceries — 4 days of food in the cooler','Test pitch the car-camp setup in Gwen\'s driveway','Early dinner with Gwen, early bed'],
     lodging:{name:"Gwen's apartment", meta:'Free · Night 2 of 2'},
     food:{name:'Brunch out + grocery dinner', meta:'~$80 groceries split + brunch'},
     suggestions:[
+      {tag:'Pickup',text:"<strong>Kara lands MKE at 10:55 AM</strong> with Rebecca's Wrath in tow. Milwaukee → Madison is ~80 mi (~1.5 hrs). Plan the run accordingly."},
       {tag:'See',text:'The <strong>Wisconsin State Capitol</strong> is free to visit and genuinely beautiful inside.'},
       {tag:'Eat',text:"Get a cheese curd fix at <strong>Graze</strong> or a beer garden — it's Wisconsin, lean in."},
       {tag:'Gear',text:'Full <strong>gear audit</strong> — sleeping bags, headlamps, matches, water jugs, propane canisters, mesh window screens.'},
@@ -418,9 +433,10 @@ const DAYS = [
     // Chamberlain → Wall → Badlands Loop → Wall → Rapid City → Mt Rushmore → Custer → Lusk
     route:[[43.8113,-99.3279],[43.9939,-102.2409],[43.7540,-101.9411],[43.8554,-101.9777],[43.9939,-102.2409],[44.0805,-103.2310],[43.8791,-103.4591],[43.7660,-103.5980],[42.7627,-104.4521]],
     timeline:['Early start — sunrise is magic in the Badlands','Hike the Notch Trail (1.5 mi, ~1 hr, ladder section)','Drive the Badlands Loop Rd','Lunch in Wall (Wall Drug is required by law)','Mt. Rushmore (1 hr is plenty)','Drive US-85 S to Lusk, WY — check into the Covered Wagon Motel'],
-    lodging:{name:'Covered Wagon Motel', meta:'Lusk, WY · BOOKED'},
+    lodging:{name:'Covered Wagon Motel', meta:'Lusk, WY · BOOKED · ⚠ alter reservation to 3 people'},
     food:{name:'Wall Drug for lunch', meta:'5-cent coffee, famous donuts'},
     suggestions:[
+      {tag:'Booking',text:"<strong>⚠ Update the Covered Wagon reservation</strong> — it's currently for 2 people; with Kara you're now 3."},
       {tag:'Hike',text:'<strong>Notch Trail</strong> at sunrise — ladder climb, canyon view, ~1 hr. Do not skip.'},
       {tag:'Drive',text:'Badlands Loop Rd (SD-240) has pullouts every half mile — stop constantly.'},
       {tag:'Weird',text:'<strong>Wall Drug</strong> is a 76,000 sq ft tourist trap and it rules. Free ice water since 1931.'},
@@ -432,10 +448,11 @@ const DAYS = [
     miles:'604', drive:'~9 hrs', sleep:'Moab Airbnb',
     // Lusk → Cheyenne → Laramie → Rawlins → Rock Springs → Vernal UT → Moab
     route:[[42.7627,-104.4521],[41.1400,-104.8202],[41.3114,-105.5911],[41.7911,-107.2387],[41.5875,-109.2029],[40.4555,-109.5287],[39.5324,-109.6890],[38.5733,-109.5498]],
-    timeline:['Early coffee + pastry from the Triangle Station in Lusk','South on US-85 to Cheyenne','West on I-80 across Wyoming (Laramie → Rock Springs)','Drop south on US-191 into Utah','Cross into the red rock country','Arrive Moab at dusk — Airbnb check-in, takeout dinner'],
+    timeline:['Early coffee + pastry from the Triangle Station in Lusk','South on US-85 to Cheyenne','West on I-80 across Wyoming (Laramie → Rock Springs)','<strong>9 AM MT — Ruby work call (11 AM ET)</strong>','Drop south on US-191 into Utah','Cross into the red rock country','Arrive Moab at dusk — Airbnb check-in, takeout dinner'],
     lodging:{name:'Moab Airbnb (Night 1 of 2)', meta:'$365/night · BOOKED'},
     food:{name:"Milt's Stop & Eat or Moab Brewery", meta:'~$25 each'},
     suggestions:[
+      {tag:'Work',text:'<strong>Ruby has a work call at 9 AM MT (11 AM ET)</strong> — plan a coffee/gas stop with cell signal so she can take it from the car.'},
       {tag:'Detour',text:'If time: <strong>Flaming Gorge</strong> overlook off US-191 — wild blue water in the desert.'},
       {tag:'Fuel',text:'Gas up in Rock Springs — long stretches of nothing ahead.'},
       {tag:'Arrival',text:'Get to Moab before dark to see the red rocks light up at golden hour.'},
@@ -522,7 +539,7 @@ const DAYS = [
     miles:'544', drive:'~8.5 hrs', sleep:'Whispering Pines Lodge, Kernville',
     // Springdale → St George → Las Vegas → Baker → Barstow → Bakersfield → Kernville
     route:[[37.1889,-113.0263],[37.1041,-113.5841],[36.1699,-115.1398],[35.2679,-116.0775],[34.8958,-117.0173],[35.3733,-119.0187],[35.7550,-118.4239]],
-    timeline:['Breakfast in Springdale, emotional goodbye to Zion','I-15 S through St George, clip Vegas','Lunch somewhere in the Mojave (Baker? Barstow?)','West on CA-58 through Bakersfield','North on CA-178 into the Sierra foothills','Arrive Kernville evening — check into Whispering Pines Lodge'],
+    timeline:['Breakfast in Springdale, emotional goodbye to Zion','<strong>Dirty Soda stop at Swig in St George</strong> — required Utah send-off','I-15 S through St George, clip Vegas','<strong>Drop Kara/Vamsi/Diego at Las Vegas airport</strong> (Diego 12:40 PM · Kara 12:15 PM · Vamsi UA 2741 at 3:30 PM)','Lunch somewhere in the Mojave (Baker? Barstow?)','West on CA-58 through Bakersfield','North on CA-178 into the Sierra foothills','Arrive Kernville evening — check into Whispering Pines Lodge','Optional: stop at Sequoia for the Sherman Tree or Moro Rock if you have light left'],
     lodging:{name:'Whispering Pines Lodge', meta:'Kernville, CA · BOOKED'},
     food:{name:'Dinner in Kernville', meta:'Ewings on the Kern'},
     suggestions:[
@@ -626,15 +643,15 @@ const DAYS = [
 // ================= LODGING (per-night detail from spreadsheet) =================
 const LODGING = [
   {night:0, dayNum:0, date:'Fri, May 29', city:'Hamilton, NY',          name:"Grandparents' house",                  type:'bed',       cost:0,      address:'Hamilton, NY',                                              booked:'Family',                  notes:'Welcome Ruby!'},
-  {night:1, dayNum:1, date:'Sat, May 30', city:'Sandusky, OH',          name:'Car camp · Sandusky',                  type:'car camp',  cost:0,      address:'Sandusky, OH',                                              booked:'No reservation',          notes:'First night in the rig — the dress rehearsal'},
+  {night:1, dayNum:1, date:'Sat, May 30', city:'Sandusky, OH',          name:'Hotel TBD · Sandusky',                 type:'hotel',     cost:0,      address:'Sandusky, OH',                                              booked:'To be booked',            notes:'Need a hotel — no longer car camping first night'},
   {night:2, dayNum:2, date:'Sun, May 31', city:'Madison, WI',           name:"Gwen's Apartment",                     type:'bed',       cost:0,      address:'Madison, WI',                                               booked:'Family · Night 1 of 2',   notes:''},
   {night:3, dayNum:3, date:'Mon, Jun 1',  city:'Madison, WI',           name:"Gwen's Apartment",                     type:'bed',       cost:0,      address:'Madison, WI',                                               booked:'Family · Night 2 of 2',   notes:''},
-  {night:4, dayNum:4, date:'Tue, Jun 2',  city:'Chamberlain, SD',       name:'Sanford Chamberlain Med Center lot',   type:'car camp',  cost:0,      address:'Chamberlain, SD',                                           booked:'No reservation needed',   notes:'Hospital parking — safe overnight option'},
+  {night:4, dayNum:4, date:'Tue, Jun 2',  city:'Sanford / Chamberlain, SD', name:'Hotel TBD · Sanford, SD',          type:'hotel',     cost:0,      address:'Sanford, SD',                                               booked:'To be booked',            notes:'Plans switched from hospital lot car-camp to a hotel — find one'},
   {night:5, dayNum:5, date:'Wed, Jun 3',  city:'Lusk, WY',              name:'Covered Wagon Motel',                  type:'hotel',     cost:0,      address:'730 S Main Street, Lusk, WY 82225',                         booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306395 · Conf #2439839733', link:'http://www.coveredwagonmotel.com/'},
   {night:6, dayNum:6, date:'Thu, Jun 4',  city:'Moab, UT',              name:'Home in Moab (Airbnb)',                type:'airbnb',    cost:288.79, costTotal:577.58, address:'1415 N Main St, Moab, UT 84532',         booked:'BOOKED · Night 1 of 2',   notes:'Total $577.58 split with Vamsi · Vamsi paid his portion ($310.84)'},
   {night:7, dayNum:7, date:'Fri, Jun 5',  city:'Moab, UT',              name:'Home in Moab (Airbnb)',                type:'airbnb',    cost:0,                          address:'1415 N Main St, Moab, UT 84532',         booked:'BOOKED · Night 2 of 2',   notes:'Same place'},
-  {night:8, dayNum:8, date:'Sat, Jun 6',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:140,    address:"Ruby's Inn, Bryce Canyon, UT",                              booked:'BOOKED · Night 1 of 2',   notes:'$140 estimated total for both nights', link:'https://www.rubysinn.com/'},
-  {night:9, dayNum:9, date:'Sun, Jun 7',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:0,                          address:"Ruby's Inn, Bryce Canyon, UT",           booked:'BOOKED · Night 2 of 2'},
+  {night:8, dayNum:8, date:'Sat, Jun 6',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:51.53,  costTotal:128.82, address:'300 S Main St, Bryce Canyon City, UT 84764',                booked:'BOOKED · Night 1 of 2',   confirmation:'Reservation Code A5XC6A · booked by Vamsi', notes:'Showers onsite · sleeping bags available for rent', link:'https://www.rubysinn.com/'},
+  {night:9, dayNum:9, date:'Sun, Jun 7',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:0,                            address:'300 S Main St, Bryce Canyon City, UT 84764', booked:'BOOKED · Night 2 of 2', notes:'Same tipi · code A5XC6A'},
   {night:10,dayNum:10,date:'Mon, Jun 8',  city:'Orderville, UT',        name:'Zion Airbnb (Orderville)',             type:'airbnb',    cost:332.89, costTotal:665.77, address:'245 W Pinyon Pine Drive, Orderville, UT 84758', booked:'BOOKED · Night 1 of 2', notes:'Washer + dryer onsite · Vamsi paid his portion'},
   {night:11,dayNum:11,date:'Tue, Jun 9',  city:'Orderville, UT',        name:'Zion Airbnb (Orderville)',             type:'airbnb',    cost:0,                          address:'245 W Pinyon Pine Drive, Orderville, UT 84758', booked:'BOOKED · Night 2 of 2', notes:'Same place'},
   {night:12,dayNum:12,date:'Wed, Jun 10', city:'Kernville, CA',         name:'Whispering Pines Lodge',               type:'hotel',     cost:0,      address:'13745 Sierra Way, Kernville, CA 93238',                     booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306698 · Conf #2439844351', link:'https://www.pineskernville.com/'},
@@ -649,10 +666,11 @@ const LODGING = [
 const FLIGHTS = [
   {dayNum:0,  date:'Fri, May 29', who:'Ruby',  from:'SRQ', to:'CLT', airline:'AA', flight:'5627', dep:'5:20 PM', arr:'7:35 PM', duration:'2h 10m', cost:'Booked on pts'},
   {dayNum:0,  date:'Fri, May 29', who:'Ruby',  from:'CLT', to:'SYR', airline:'AA', flight:'1976', dep:'9:00 PM', arr:'10:50 PM', duration:'2h 0m', layover:'1h 25m layover in CLT'},
+  {dayNum:3,  date:'Mon, Jun 1',  who:'Kara',  from:'(home)', to:'MKE',              arr:'10:55 AM',  note:"With Rebecca's Wrath · pick up at Milwaukee, drive to Madison"},
   {dayNum:6,  date:'Thu, Jun 4',  who:'Vamsi', from:'DFW', to:'DEN', airline:'UA', flight:'644',  arr:'10:10 AM',  note:'Pick up at Denver airport'},
   {dayNum:6,  date:'Thu, Jun 4',  who:'Diego', from:'(home)', to:'DEN',                                arr:'10:10 AM',  note:'Pick up at Denver airport'},
   {dayNum:12, date:'Wed, Jun 10', who:'Diego', from:'LAS', to:'(home)', dep:'12:40 PM', note:'Drop off at Las Vegas airport'},
-  {dayNum:12, date:'Wed, Jun 10', who:'Kara',  from:'LAS', to:'(home)', dep:'1:00 PM',  note:'Drop off at Las Vegas airport'},
+  {dayNum:12, date:'Wed, Jun 10', who:'Kara',  from:'LAS', to:'(home)', dep:'12:15 PM', note:'Drop off at Las Vegas airport'},
   {dayNum:12, date:'Wed, Jun 10', who:'Vamsi', from:'LAS', to:'DFW', airline:'UA', flight:'2741', dep:'3:30 PM'},
   {dayNum:18, date:'Tue, Jun 16', who:'Ruby',  from:'SFO', to:'BWI', airline:'TP', flight:'869',  dep:'9:00 PM', arr:'5:20 AM (next day · −3h)', duration:'5h 20m', cost:'$210'},
   {dayNum:18, date:'Tue, Jun 16', who:'Ruby',  from:'BWI', to:'SRQ', airline:'TP', flight:'221',  dep:'8:10 AM', arr:'10:45 AM', duration:'2h 35m', layover:'2h 50m layover in BWI'}
@@ -693,9 +711,9 @@ const BUDGET_TOTALS = {
   food:        717,
   gas:         568.10,
   miscSetup:   221.59,
-  lodging:     869.38,
+  lodging:     780.90,
   flights:     210,
-  grandTotal:  2586.06
+  grandTotal:  2497.59
 };
 
 const BUDGET_RUBY_PAID = [
@@ -788,3 +806,25 @@ const PODCASTS = {
     }
   ]
 };
+
+// ================= WEATHER FORECAST (per day, from Lodging tab) =================
+const WEATHER = [
+  {dayNum:0,  date:'2026-05-29', location:'Hamilton, NY',     high:'68–74°F', low:'48–55°F', note:'Mild spring weather. Possible rain showers/humidity. Light jacket at night.'},
+  {dayNum:1,  date:'2026-05-30', location:'Sandusky, OH',     high:'70–76°F', low:'52–58°F', note:'Pleasant near the lake but can feel breezy/chilly after sunset. Moderate chance of rain.'},
+  {dayNum:2,  date:'2026-05-31', location:'Madison, WI',      high:'72–78°F', low:'53–59°F', note:'Warm daytime, comfortable evenings. Humidity beginning to rise.'},
+  {dayNum:3,  date:'2026-06-01', location:'Madison, WI',      high:'74–80°F', low:'55–60°F', note:'Similar conditions; occasional thunderstorms possible.'},
+  {dayNum:4,  date:'2026-06-02', location:'Sanford / Chamberlain, SD', high:'72–82°F', low:'50–58°F', note:'Open plains weather — windy, dry-ish, big temp swings. Storms possible.'},
+  {dayNum:5,  date:'2026-06-03', location:'Lusk, WY',         high:'68–78°F', low:'42–50°F', note:'Much drier. Nights cool quickly. Wind can make camping colder than forecast.'},
+  {dayNum:6,  date:'2026-06-04', location:'Moab, UT',         high:'90–98°F', low:'58–66°F', note:'HOT desert sun. Very dry. Shade and hydration essential. Nights much nicer.'},
+  {dayNum:7,  date:'2026-06-05', location:'Moab, UT',         high:'92–100°F',low:'60–67°F', note:'Peak heat hours feel intense. UV extremely high. Early hikes strongly recommended.'},
+  {dayNum:8,  date:'2026-06-06', location:'Bryce Canyon NP',  high:'65–75°F', low:'32–42°F', note:'HUGE temperature swing due to elevation (~8,000–9,000 ft). Nights can feel near-freezing camping.'},
+  {dayNum:9,  date:'2026-06-07', location:'Bryce Canyon NP',  high:'65–76°F', low:'33–43°F', note:'Dry air makes evenings very cold once sun sets. Bring real layers + warm sleeping setup.'},
+  {dayNum:10, date:'2026-06-08', location:'Orderville, UT',   high:'78–88°F', low:'48–56°F', note:'Warmer than Bryce due to lower elevation. Dry and sunny. Pleasant nights.'},
+  {dayNum:11, date:'2026-06-09', location:'Orderville, UT',   high:'80–89°F', low:'50–57°F', note:'Similar conditions; flash storm chance low but possible.'},
+  {dayNum:12, date:'2026-06-10', location:'Kernville, CA',    high:'88–98°F', low:'58–66°F', note:'Dry heat. Can feel extremely hot in afternoon sun. River areas cooler.'},
+  {dayNum:13, date:'2026-06-11', location:'Yosemite NP',      high:'75–88°F', low:'45–55°F', note:'Depends heavily on elevation. Valley warm in daytime, cool nights. Excellent camping weather overall.'},
+  {dayNum:14, date:'2026-06-12', location:'Yosemite NP',      high:'76–89°F', low:'46–56°F', note:'Dry and sunny likely. Higher elevations MUCH colder.'},
+  {dayNum:15, date:'2026-06-13', location:'Lake Tahoe',       high:'68–78°F', low:'38–48°F', note:'Crisp mountain air. Nights surprisingly cold near the lake.'},
+  {dayNum:16, date:'2026-06-14', location:'San Francisco',    high:'60–68°F', low:'50–56°F', note:'Classic cool SF weather. Windy and cloudy possible even in June. Bring layers.'},
+  {dayNum:17, date:'2026-06-15', location:'San Francisco',    high:'60–69°F', low:'51–57°F', note:'Similar — mornings/evenings chilly despite being California.'}
+];

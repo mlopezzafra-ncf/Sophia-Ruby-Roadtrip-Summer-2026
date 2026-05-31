@@ -10,7 +10,7 @@ Tabs and where each one maps to on the site:
 
 | Spreadsheet tab | Site location |
 |-----------------|---------------|
-| `NEW DayBYDay` | `js/data.js` → `DAYS` array → renders on `days.html` |
+| `DayByDay` | `js/data.js` → `DAYS` array → renders on `days.html` |
 | `Lodging`      | `js/data.js` → `LODGING` array → merged into each day card on `days.html` |
 | `Flights`      | `js/data.js` → `FLIGHTS` array → "Flights today" block on relevant day cards |
 | `Food`         | `js/data.js` → `DAILY_FOOD` array → per-meal cost chips on day cards |

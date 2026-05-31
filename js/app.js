@@ -510,6 +510,15 @@ function initDays(){
     const lodgingForDay = (typeof LODGING !== 'undefined') ? LODGING.find(l => l.dayNum === d.n) : null;
     const flightsForDay = (typeof FLIGHTS !== 'undefined') ? FLIGHTS.filter(f => f.dayNum === d.n) : [];
     const foodForDay    = (typeof DAILY_FOOD !== 'undefined') ? DAILY_FOOD.find(f => f.dayNum === d.n) : null;
+    const weatherForDay = (typeof WEATHER !== 'undefined') ? WEATHER.find(w => w.dayNum === d.n) : null;
+
+    const weatherHTML = weatherForDay ? `
+      <div class="day-weather">
+        <span class="wx-loc">☀ ${escapeHTML(weatherForDay.location)}</span>
+        <span class="wx-temp">High <strong>${escapeHTML(weatherForDay.high)}</strong></span>
+        <span class="wx-temp">Low <strong>${escapeHTML(weatherForDay.low)}</strong></span>
+        <span class="wx-note">${escapeHTML(weatherForDay.note)}</span>
+      </div>` : '';
 
     const flightHTML = flightsForDay.length ? `
       <div class="day-flights">
@@ -573,6 +582,7 @@ function initDays(){
           <span class="day-chip">⏱ ${d.drive}</span>
           <span class="day-chip">🌙 ${d.sleep}</span>
         </div>
+        ${weatherHTML}
         ${flightHTML}
         <div class="day-main">
           <div class="day-content-split">

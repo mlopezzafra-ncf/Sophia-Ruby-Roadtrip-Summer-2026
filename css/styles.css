@@ -1079,3 +1079,37 @@
   .day-weather .wx-note{
     flex-basis:100%;color:var(--ink-soft);font-style:italic;font-size:12.5px;line-height:1.45;
   }
+
+  /* TODAY highlight on the current trip day */
+  .day-card.today{
+    border-image:linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 50%, var(--rust) 100%) 1;
+    box-shadow:
+      0 0 0 3px rgba(232,180,76,.4),
+      0 12px 36px rgba(195,74,44,.25),
+      var(--shadow);
+    position:relative;
+  }
+  .day-card.today .day-header{
+    background:linear-gradient(90deg, var(--rust) 0%, var(--burnt) 100%);
+  }
+  .day-card.today .day-num-badge{
+    background:var(--paper);color:var(--rust);
+    box-shadow:3px 3px 0 rgba(0,0,0,.3);
+  }
+  .today-badge{
+    display:inline-block;
+    background:var(--gold);color:var(--navy);
+    font-family:'Alfa Slab One';font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;
+    padding:3px 10px;margin-bottom:6px;
+    transform:rotate(-1.5deg);
+    box-shadow:2px 2px 0 var(--navy);
+    animation:todayPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes todayPulse{
+    0%,100% { box-shadow:2px 2px 0 var(--navy), 0 0 0 0 rgba(232,180,76,.6); }
+    50%     { box-shadow:2px 2px 0 var(--navy), 0 0 0 6px rgba(232,180,76,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .today-badge{animation:none}
+  }

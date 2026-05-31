@@ -21,6 +21,17 @@ function storageGet(k){ try { return localStorage.getItem(k); } catch { return n
 function storageSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
 function fmtMoney(n){ if(n==null||isNaN(n)) return ''; return '$'+Number(n).toFixed(2).replace(/\.00$/,''); }
 
+// Returns the 0-indexed trip day number for today, or null if pre/post-trip.
+// Trip starts 2026-05-29 (Day 0) and runs 19 days through 2026-06-16 (Day 18).
+function currentTripDayIndex(){
+  const start = new Date('2026-05-29T00:00:00');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.floor((today - start) / 86400000);
+  if (diff < 0 || diff > 18) return null;
+  return diff;
+}
+
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║  TRIP METER  ·  CONFIG  (edit these values whenever needed)             ║
 // ╠══════════════════════════════════════════════════════════════════════════╣
@@ -506,6 +517,7 @@ const ICON_APPLE_HTML   = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable
 function initDays(){
   const grid = document.getElementById('daysGrid');
   if (!grid) return;
+  const todayIdx = currentTripDayIndex();
   DAYS.forEach(d => {
     const lodgingForDay = (typeof LODGING !== 'undefined') ? LODGING.find(l => l.dayNum === d.n) : null;
     const flightsForDay = (typeof FLIGHTS !== 'undefined') ? FLIGHTS.filter(f => f.dayNum === d.n) : [];
@@ -560,8 +572,9 @@ function initDays(){
         ${foodForDay.notes ? `<span class="food-note">${escapeHTML(foodForDay.notes)}</span>` : ''}
       </div>` : '';
 
+    const isToday = (d.n === todayIdx);
     const card = document.createElement('article');
-    card.className = 'day-card reveal';
+    card.className = 'day-card reveal' + (isToday ? ' today' : '');
     card.id = `day-${d.n}`;
     card.innerHTML = `
       <div class="day-header" onclick="toggleDay(${d.n})">
@@ -569,6 +582,7 @@ function initDays(){
           <span class="lbl">Day</span><span class="num">${d.n}</span>
         </div>
         <div class="day-title">
+          ${isToday ? '<div class="today-badge">★ TODAY</div>' : ''}
           <div class="date">${d.date}</div>
           <h3>${d.title}</h3>
           <div class="route">${d.subroute}</div>
@@ -630,6 +644,16 @@ function initDays(){
     renderPlaylist(d.n);
     loadSpotify(d.n);
   });
+  // Auto-open today's card and scroll it into view (unless URL already targets a day)
+  if (todayIdx != null && !location.hash){
+    const todayCard = document.getElementById('day-' + todayIdx);
+    if (todayCard){
+      setTimeout(() => {
+        toggleDay(todayIdx);
+        todayCard.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 200);
+    }
+  }
 }
 
 function initLodgingTotalsOnDays(){} // placeholder for future use

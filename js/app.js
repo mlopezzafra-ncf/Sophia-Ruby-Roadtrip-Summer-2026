@@ -33,44 +33,51 @@ function currentTripDayIndex(){
 }
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
-// ║  TRIP METER  ·  CONFIG  (edit these values whenever needed)             ║
+// ║  TRIP METER  ·  CONFIG                                                   ║
 // ╠══════════════════════════════════════════════════════════════════════════╣
-// ║  The meter on the home page sums daily MILES / GALLONS / GAS $ from a   ║
-// ║  Google Sheet so the girls can update it from the road without any code ║
-// ║  changes or rebuilds.                                                   ║
+// ║  The home-page meter sums daily MILES / GALLONS / GAS $ from a CSV.     ║
+// ║  By default it reads from `data/meter-log.csv` inside this repo, so     ║
+// ║  you can update totals straight from GitHub — no spreadsheet needed.    ║
 // ║                                                                          ║
-// ║  HOW TO HOOK UP THE SHEET (one-time):                                   ║
+// ║  ──── OPTION A · EDIT DIRECTLY ON GITHUB (recommended) ────────────────  ║
+// ║   1.  Open  github.com/<your-repo>/blob/main/data/meter-log.csv         ║
+// ║   2.  Click the pencil ✏ icon (top-right) to edit.                      ║
+// ║   3.  Fill in the row for today: Miles, Gallons, Gas $.                 ║
+// ║   4.  Commit at the bottom.  GitHub Pages rebuilds in ~30 seconds and   ║
+// ║       the odometer rolls up next time the page is loaded.               ║
+// ║   Works from desktop OR the GitHub mobile app.                          ║
+// ║                                                                          ║
+// ║  ──── OPTION B · USE A GOOGLE SHEETS PUBLISH-TO-WEB CSV ───────────────  ║
 // ║   1.  Open the Google Sheet.                                            ║
-// ║   2.  File → Share → Publish to web                                     ║
-// ║   3.  Pick the daily-totals tab. Choose format = CSV. Click Publish.    ║
-// ║   4.  Copy the URL it gives you and paste it into `publishedCsvUrl`     ║
-// ║       below.  It will look like:                                        ║
-// ║       https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&output=csv ║
+// ║   2.  File → Share → Publish to web.                                    ║
+// ║   3.  Pick the daily-totals tab.  Format = CSV.  Click Publish.         ║
+// ║   4.  Paste the URL into `publishedCsvUrl` below (it overrides the      ║
+// ║       repo CSV when set).                                                ║
 // ║                                                                          ║
-// ║  EXPECTED SHEET LAYOUT (1 row per day, first row is the header):        ║
-// ║   | Date        | Miles today | Gallons today | Gas $ today |           ║
-// ║   | 2026-05-30  |       464   |     14.5      |      50.80  |           ║
-// ║   | 2026-05-31  |       437   |     13.7      |      46.40  |           ║
+// ║  EITHER way the expected layout is (header + one row per day):          ║
+// ║   | Date        | Miles today | Gallons today | Gas $ today | Notes |   ║
+// ║   | 2026-05-30  |       464   |     14.5      |      50.80  |  …   |   ║
 // ║                                                                          ║
-// ║  Extra columns are ignored. Blank rows are skipped. Currency symbols    ║
-// ║  ($, commas) are stripped from values automatically.                    ║
+// ║  Extra columns are ignored. Blank rows / blank cells are treated as 0.  ║
+// ║  Currency symbols ($, commas) are stripped from values automatically.   ║
 // ╚══════════════════════════════════════════════════════════════════════════╝
 const METER_CONFIG = {
-  // PASTE the Google Sheets "Publish to web" CSV URL here once it exists.
-  // Leave blank to use the fallback totals below.
-  publishedCsvUrl: '',
+  // Default: the CSV that lives in this repo.  Edit on GitHub to update.
+  // To use a Google Sheet instead, paste the Publish-to-web CSV URL here.
+  publishedCsvUrl: 'data/meter-log.csv',
 
-  // Optional: link to the editable sheet, shown as "Update the sheet ↗"
-  // under the meter so the girls can jump straight to data entry.
-  sheetEditUrl: 'https://docs.google.com/spreadsheets/d/1CQc1tZBKmu5vxMcTdc5BwIlwGiw3pou4gAnm8RJFwI4/edit?usp=sharing',
+  // The CTA link under the meter — by default opens the repo CSV in
+  // GitHub's web editor.  Set to a Google Sheet edit URL if using Option B.
+  sheetEditUrl: 'https://github.com/mlopezzafra-ncf/Sophia-Ruby-Roadtrip-Summer-2026/edit/main/data/meter-log.csv',
+  sheetEditLabel: '✏ Update on GitHub ↗',
 
   // Trip basics — rarely change.
   tripStart:     '2026-05-29',  // Day 0 = Ruby arrives in Hamilton
   tripTotalDays: 19,            // 19 days, numbered 0–18
 
-  // Fallback totals — shown if the CSV fetch fails, the sheet is empty,
-  // or `publishedCsvUrl` is blank. Update these to the last-known good
-  // numbers so the meter never sits at zero by accident.
+  // Fallback totals — shown if the CSV fetch fails or the log has no
+  // filled-in rows yet. Update these to the last-known good numbers
+  // so the meter never sits at zero by accident.
   fallback: { miles: 0, gallons: 0, spend: 0 }
 };
 
@@ -92,9 +99,10 @@ async function initMeter(){
   // Day X of 19 — start with date-math; CSV may refine it below
   if (dayEl) dayEl.textContent = computeDayNumber();
 
-  // Wire the "Update the sheet" link if a URL is configured
+  // Wire the "Update" CTA link if a URL is configured
   if (sheetLink && METER_CONFIG.sheetEditUrl){
     sheetLink.href = METER_CONFIG.sheetEditUrl;
+    sheetLink.textContent = METER_CONFIG.sheetEditLabel || '✏ Update totals ↗';
     sheetLink.style.display = '';
   }
 
@@ -108,12 +116,14 @@ async function initMeter(){
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const text = await resp.text();
       const parsed = parseSheetCsv(text);
-      if (parsed.rowCount > 0){
+      // Use "filledRowCount" so that pre-populated date-only rows in the
+      // repo CSV don't get counted as logged days.
+      if (parsed.filledRowCount > 0){
         totals = { miles: parsed.miles, gallons: parsed.gallons, spend: parsed.spend };
-        loggedDays = parsed.rowCount;
+        loggedDays = parsed.filledRowCount;
         source = `${loggedDays} day${loggedDays===1?'':'s'} logged`;
       } else {
-        source = 'sheet is empty — using fallback';
+        source = 'no totals logged yet — fill in today\'s row';
       }
     } catch (e){
       console.warn('Meter: sheet fetch failed,', e);
@@ -143,12 +153,13 @@ async function initMeter(){
 }
 
 function computeDayNumber(){
-  // Returns 1-indexed day-of-trip, or 0 if pre-trip, or tripTotalDays if past end.
+  // Returns the 0-indexed trip day matching the day-cards' numbering
+  // (Day 0 = arrival, Day 18 = Ruby flies home). Clamps pre/post-trip.
   const today = new Date();
   const start = new Date(METER_CONFIG.tripStart + 'T00:00:00');
   const diffDays = Math.floor((today - start) / 86400000);
   if (diffDays < 0) return 0;
-  return Math.min(diffDays + 1, METER_CONFIG.tripTotalDays);
+  return Math.min(diffDays, METER_CONFIG.tripTotalDays - 1);
 }
 
 function buildOdometerDrums(el, totalDigits, decimals, prefix){
@@ -254,8 +265,10 @@ function animateOdometer(el, target, durationMs, delayMs, decimals){
 function parseSheetCsv(text){
   // Sums columns 2/3/4 (Miles / Gallons / Gas $) of every row with a non-blank
   // first column. Header row is auto-detected and skipped.
+  //  rowCount       = every dated row (incl. pre-filled blank-data rows)
+  //  filledRowCount = rows that have at least one non-zero number in cols 2-4
   const lines = String(text || '').replace(/^﻿/, '').trim().split(/\r?\n/);
-  let miles = 0, gallons = 0, spend = 0, rowCount = 0;
+  let miles = 0, gallons = 0, spend = 0, rowCount = 0, filledRowCount = 0;
   let startIdx = 0;
   if (lines.length > 0){
     const first = parseCsvLine(lines[0]).map(c => c.trim().toLowerCase());
@@ -273,8 +286,9 @@ function parseSheetCsv(text){
     const g = parseFloat((cells[2]||'').replace(/[$,\s]/g,'')) || 0;
     const s = parseFloat((cells[3]||'').replace(/[$,\s]/g,'')) || 0;
     miles += m; gallons += g; spend += s; rowCount++;
+    if (m > 0 || g > 0 || s > 0) filledRowCount++;
   }
-  return { miles, gallons, spend, rowCount };
+  return { miles, gallons, spend, rowCount, filledRowCount };
 }
 
 function parseCsvLine(line){

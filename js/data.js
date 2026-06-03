@@ -17,8 +17,9 @@ const STOPS = [
   {n:12, day:12, name:'Kernville, CA',    lat:35.7550, lng:-118.4239, type:'sleep', label:'Whispering Pines Lodge'},
   {n:13, day:13, name:'Sequoia NP',       lat:36.4864, lng:-118.5658, type:'park'},
   {n:14, day:14, name:'Yosemite NP',      lat:37.8651, lng:-119.5383, type:'park'},
-  {n:15, day:15, name:'Lake Tahoe',       lat:39.0968, lng:-120.0324, type:'sleep', label:'Hipcamp'},
-  {n:16, day:16, name:'San Francisco, CA',lat:37.7749, lng:-122.4194, type:'end',   label:"Cousin's home"},
+  {n:15, day:14, name:'Sonora, CA',       lat:37.9840, lng:-120.3822, type:'sleep', label:'Historic Sonora Inn'},
+  {n:16, day:15, name:'Folsom Lake, CA',  lat:38.7297, lng:-121.0935, type:'sleep', label:'Peninsula Campground'},
+  {n:17, day:16, name:'San Francisco, CA',lat:37.7749, lng:-122.4194, type:'end',   label:"Cousin's home"},
 ];
 
 const DAY_COLORS = ['#C34A2C','#D97A3A','#E8B44C','#C88830','#2D5A3D','#1E4030','#1F4A5E','#1A3A4F','#8B3A3A','#6B4423','#9C4A3C','#A85D4A','#5A7040','#3B5E7E','#724F3F','#8A4B2E','#4A6B3A','#2D5A5E','#1A3A4F','#2A1810'];
@@ -231,7 +232,7 @@ const NATIONAL_PARKS = [
     }},
 ];
 
-const PLANNED = {food:717, gas:568, lodging:781, activities:100, misc:222};
+const PLANNED = {food:717, gas:568, lodging:1018, activities:100, misc:222, supplies:0};
 
 // Structured packing data from the spreadsheet.
 // Each item: { item, buy (need to purchase), pack (need to pack), both (one for both ppl), who, qty, note, link }
@@ -367,13 +368,13 @@ const DAYS = [
     ],
     protip:'Download offline maps for western routes and Spotify playlists before you lose cell signal in the plains.'},
 
-  {n:1, date:'Sat, May 30', title:'Hamilton → Sandusky, OH', subroute:'I-90 W via PA → Jefferson, OH → Sandusky, OH',
-    miles:'464', drive:'~7.5 hrs + family lunch',  sleep:'Car camp · Sandusky, OH',
-    // Hamilton → Buffalo → Erie → Jefferson OH → Cleveland → Sandusky
+  {n:1, date:'Sat, May 30', title:'Hamilton → Ridgeville, OH', subroute:'I-90 W via PA → Jefferson → Sandusky → Motel 6',
+    miles:'464', drive:'~7.5 hrs + family lunch',  sleep:'Motel 6 · Ridgeville, OH',
+    // Hamilton → Buffalo → Erie → Jefferson OH → Cleveland → Sandusky → Ridgeville
     route:[[42.8270,-75.5446],[42.8864,-78.8784],[42.1292,-80.0851],[41.7384,-80.7681],[41.4993,-81.6944],[41.4534,-82.7079]],
-    timeline:['Morning departure from Hamilton','I-90 W across NY into PA — Buffalo, Erie','~5 hrs to Jefferson, OH','LUNCH at Great Aunt & Uncle\'s house (415 Woodside Ave)','~2 hrs Jefferson → Sandusky, OH','Workout + shower at Planet Fitness','DINNER at Mekong Vietnamese (3321 Milan Rd)','Car camp in Sandusky — first night in the rig'],
-    lodging:{name:'Car camp · Sandusky, OH', meta:'First night in the rig · Free'},
-    food:{name:'Mekong Vietnamese for dinner', meta:'3321 Milan Rd · Family lunch in Jefferson'},
+    timeline:['Morning departure from Hamilton','I-90 W across NY into PA — Buffalo, Erie','~5 hrs to Jefferson, OH','LUNCH at Great Aunt & Uncle\'s house (415 Woodside Ave)','~2 hrs Jefferson → Sandusky, OH','Workout at Planet Fitness','DINNER at Mekong Vietnamese (3321 Milan Rd, Sandusky)','Continue west · sleep at Motel 6 in Ridgeville'],
+    lodging:{name:'Motel 6 · Ridgeville, OH', meta:'$74 · BOOKED'},
+    food:{name:'Mekong Vietnamese for dinner', meta:'3321 Milan Rd, Sandusky · Family lunch in Jefferson'},
     suggestions:[
       {tag:'Family',text:'<strong>Lunch in Jefferson, OH</strong> with Great Aunt & Uncle — 415 Woodside Ave. Allow time.'},
       {tag:'Shower',text:'<strong>Planet Fitness in Sandusky</strong> for the first night-before-car-camp shower. Premium membership covers both of you.'},
@@ -388,7 +389,7 @@ const DAYS = [
     route:[[41.4534,-82.7079],[41.6528,-83.5379],[41.8781,-87.6298],[43.0731,-89.4012]],
     timeline:['Breakfast on the road from Sandusky','I-90 W through Toledo into Indiana','Skirt Chicago on I-90/I-94 — aim to be past O\'Hare before 3 PM','Cross into Wisconsin late afternoon','Arrive Madison evening — reunite with Gwen','Dinner with Gwen — Kara joins for the western leg'],
     lodging:{name:"Gwen's apartment", meta:'Madison, WI · Free · Night 1 of 2'},
-    food:{name:'Road snacks + dinner with Gwen', meta:'~$40 total'},
+    food:{name:'Tofu with Peanut Sauce on Rice with Broccoli', meta:'Dinner with Gwen · road snacks earlier'},
     suggestions:[
       {tag:'Route',text:'Stay on <strong>I-90 W</strong> the whole way — Toledo, skirt Chicago, into Madison.'},
       {tag:'Stop',text:"<strong>Lou Malnati's</strong> in Chicago for a deep-dish detour, OR <strong>Portillo's</strong> for a quick Italian beef."},
@@ -402,7 +403,7 @@ const DAYS = [
     route:null,
     timeline:['Sleep in — you earned it','Brunch in Madison (Marigold or Short Stack Eats)','<strong>Pick up Kara + Rebecca\'s Wrath at MKE — they land 10:55 AM</strong>','Walk State Street to the Capitol','Gear audit + Target/REI run for any last camping supplies','Groceries — 4 days of food in the cooler','Test pitch the car-camp setup in Gwen\'s driveway','Early dinner with Gwen, early bed'],
     lodging:{name:"Gwen's apartment", meta:'Free · Night 2 of 2'},
-    food:{name:'Brunch out + grocery dinner', meta:'~$80 groceries split + brunch'},
+    food:{name:'Spring Rolls with Peanut Sauce for dinner', meta:'Brunch out · grocery dinner with Gwen'},
     suggestions:[
       {tag:'Pickup',text:"<strong>Kara lands MKE at 10:55 AM</strong> with Rebecca's Wrath in tow. Milwaukee → Madison is ~80 mi (~1.5 hrs). Plan the run accordingly."},
       {tag:'See',text:'The <strong>Wisconsin State Capitol</strong> is free to visit and genuinely beautiful inside.'},
@@ -414,12 +415,12 @@ const DAYS = [
     protip:'Print a paper copy of the route and reservations. Phones die, signal disappears in South Dakota.'},
 
   {n:4, date:'Tue, Jun 2', title:'Madison → Chamberlain, SD', subroute:'I-90 W across MN & SD',
-    miles:'594', drive:'~8.5 hrs', sleep:'Car camp · Chamberlain',
+    miles:'594', drive:'~8.5 hrs', sleep:'AmericInn by Wyndham',
     // Madison → La Crosse → Rochester MN → Albert Lea → Sioux Falls → Mitchell → Chamberlain
     route:[[43.0731,-89.4012],[43.8014,-91.2396],[44.0121,-92.4802],[43.6480,-93.3686],[43.5446,-96.7311],[43.7094,-98.0298],[43.8113,-99.3279]],
-    timeline:['Leave Madison ~8 AM','Cross Minnesota on I-90','Lunch stop in Mitchell, SD (Corn Palace if you\'re feeling it)','Arrive Chamberlain late afternoon','Set up car camp, cook a simple dinner'],
-    lodging:{name:'Car camp in Chamberlain, SD', meta:'Chamberlain Medical Center lot · Free'},
-    food:{name:'Camp stove dinner', meta:'Pasta + canned sauce, ~$8 total'},
+    timeline:['Leave Madison ~9 AM','Cross Minnesota on I-90','6.5 hrs to Planet Fitness in Sioux Falls — workout','Hy-Vee shopping run (King Bings, M&Ms, foil, GF oatmeal packets, dish soap, broccoli)','Takeout dinner in Sioux Falls','2 hrs to Chamberlain · check into AmericInn'],
+    lodging:{name:'AmericInn by Wyndham Chamberlain', meta:"1981 East King St · Anne's pts · Trip ID 1018360035 · BOOKED"},
+    food:{name:'Sioux Falls takeout dinner', meta:'~$30 total'},
     suggestions:[
       {tag:'Detour',text:'The <strong>Corn Palace</strong> in Mitchell SD is peak Americana kitsch — worth 30 min.'},
       {tag:'View',text:'Chamberlain sits on the Missouri River — <strong>Dignity of Earth & Sky</strong> statue is right off I-90, free, stunning.'},
@@ -432,9 +433,9 @@ const DAYS = [
     miles:'388', drive:'~7 hrs + stops', sleep:'Covered Wagon Motel, Lusk WY',
     // Chamberlain → Wall → Badlands Loop → Wall → Rapid City → Mt Rushmore → Custer → Lusk
     route:[[43.8113,-99.3279],[43.9939,-102.2409],[43.7540,-101.9411],[43.8554,-101.9777],[43.9939,-102.2409],[44.0805,-103.2310],[43.8791,-103.4591],[43.7660,-103.5980],[42.7627,-104.4521]],
-    timeline:['Early start — sunrise is magic in the Badlands','Hike the Notch Trail (1.5 mi, ~1 hr, ladder section)','Drive the Badlands Loop Rd','Lunch in Wall (Wall Drug is required by law)','Mt. Rushmore (1 hr is plenty)','Drive US-85 S to Lusk, WY — check into the Covered Wagon Motel'],
-    lodging:{name:'Covered Wagon Motel', meta:'Lusk, WY · BOOKED · ⚠ alter reservation to 3 people'},
-    food:{name:'Wall Drug for lunch', meta:'5-cent coffee, famous donuts'},
+    timeline:['Early start — sunrise is magic in the Badlands','Hike the Notch Trail (1.5 mi, ~1 hr, ladder section)','Drive the Badlands Loop Rd','Lunch in Wall (Wall Drug is required by law)','Mt. Rushmore (1 hr is plenty)','COOK DINNER at Rushmore — Broccoli + Mac & Cheese','Drive US-85 S to Lusk, WY — check into the Covered Wagon Motel'],
+    lodging:{name:'Covered Wagon Motel', meta:'Lusk, WY · $15 · BOOKED · ⚠ alter reservation to 3 people'},
+    food:{name:'Wall Drug lunch · Mac & Cheese dinner at Rushmore', meta:'5¢ coffee at Wall, cook stove dinner at Rushmore'},
     suggestions:[
       {tag:'Booking',text:"<strong>⚠ Update the Covered Wagon reservation</strong> — it's currently for 2 people; with Kara you're now 3."},
       {tag:'Hike',text:'<strong>Notch Trail</strong> at sunrise — ladder climb, canyon view, ~1 hr. Do not skip.'},
@@ -450,7 +451,7 @@ const DAYS = [
     route:[[42.7627,-104.4521],[41.1400,-104.8202],[41.3114,-105.5911],[41.7911,-107.2387],[41.5875,-109.2029],[40.4555,-109.5287],[39.5324,-109.6890],[38.5733,-109.5498]],
     timeline:['Early coffee + pastry from the Triangle Station in Lusk','South on US-85 to Cheyenne','West on I-80 across Wyoming (Laramie → Rock Springs)','<strong>9 AM MT — Ruby work call (11 AM ET)</strong>','Drop south on US-191 into Utah','Cross into the red rock country','Arrive Moab at dusk — Airbnb check-in, takeout dinner'],
     lodging:{name:'Moab Airbnb (Night 1 of 2)', meta:'$365/night · BOOKED'},
-    food:{name:"Milt's Stop & Eat or Moab Brewery", meta:'~$25 each'},
+    food:{name:'Chicken Fried Rice for dinner', meta:'Cook at the Moab Airbnb'},
     suggestions:[
       {tag:'Work',text:'<strong>Ruby has a work call at 9 AM MT (11 AM ET)</strong> — plan a coffee/gas stop with cell signal so she can take it from the car.'},
       {tag:'Detour',text:'If time: <strong>Flaming Gorge</strong> overlook off US-191 — wild blue water in the desert.'},
@@ -466,7 +467,7 @@ const DAYS = [
     route:[[38.5733,-109.5498],[38.6167,-109.5990],[38.7436,-109.5207],[38.6869,-109.5365],[38.5733,-109.5498]],
     timeline:['Pre-dawn start to beat heat and crowds','Delicate Arch hike (3 mi RT, ~2 hrs) — do this first','Windows Section + Double Arch (easy, short)','Lunch break back in Moab','Afternoon nap (seriously)','Sunset at Delicate Arch viewpoint or Corona Arch'],
     lodging:{name:'Moab Airbnb (Night 2)', meta:'Same as last night'},
-    food:{name:'Picnic lunch + dinner out', meta:'~$50 total'},
+    food:{name:'Fajitas & Margaritas for dinner', meta:'Picnic lunch · meal prep extra for tomorrow'},
     suggestions:[
       {tag:'Timed Entry',text:'<strong>Arches requires a timed entry reservation</strong> April–Oct. Book on recreation.gov MONTHS ahead.'},
       {tag:'Hike',text:'<strong>Delicate Arch</strong> at sunrise = fewer people, cooler temps, better photos.'},
@@ -481,7 +482,7 @@ const DAYS = [
     route:[[38.5733,-109.5498],[38.9937,-110.1595],[38.3722,-110.7137],[38.2915,-111.2615],[37.9133,-111.4203],[37.7705,-111.6027],[37.5930,-112.1871]],
     timeline:['Leave Moab mid-morning','I-70 to UT-24 south through Capitol Reef','Scenic Byway 12 — one of the best drives in America','Lunch in Torrey or Boulder, UT','Arrive Bryce mid-afternoon — check into the tipi at Ruby\'s Inn','Sunset at Sunset Point (the name earns it)'],
     lodging:{name:"Tipi @ Ruby's Inn & Campgrounds", meta:'Bryce Canyon · BOOKED · Night 1 of 2'},
-    food:{name:'Camp dinner', meta:'Foil-pack dinner over coals, ~$10'},
+    food:{name:'Quesadillas with leftover Fajitas for dinner', meta:'Vegetarian option for Vamsi'},
     suggestions:[
       {tag:'Drive',text:'<strong>Utah Scenic Byway 12</strong> is a designated All-American Road — Hogsback ridge, slickrock, aspens.'},
       {tag:'Stop',text:"<strong>Hell's Backbone Grill</strong> in Boulder UT — famous farm-to-table lunch if open."},
@@ -496,7 +497,7 @@ const DAYS = [
     route:[[37.5930,-112.1871],[37.6288,-112.1638],[37.6238,-112.1673],[37.4728,-112.2384],[37.5930,-112.1871]],
     timeline:['Sunrise at Sunrise Point','Breakfast at the tipi','Navajo Loop + Queens Garden combo (2.9 mi, ~2 hrs — the classic hike)','Lunch + rest','Afternoon: drive the 18-mi scenic rd to Rainbow Point (9,115 ft)','Sunset + stargazing — Bryce has Dark Sky designation'],
     lodging:{name:"Tipi @ Ruby's Inn & Campgrounds", meta:'BOOKED · Night 2 of 2'},
-    food:{name:'Camp meals all day', meta:'~$12 total'},
+    food:{name:'Sausage & Peppers on Pasta for dinner', meta:'Camp meals · ~$20 total'},
     suggestions:[
       {tag:'Hike',text:'<strong>Navajo Loop → Queens Garden</strong> down into the hoodoos is THE Bryce hike. Go clockwise (down Wall Street first).'},
       {tag:'Stars',text:'Bryce is one of the <strong>darkest skies in the US</strong>. Check for ranger astronomy programs.'},
@@ -511,7 +512,7 @@ const DAYS = [
     route:[[37.5930,-112.1871],[37.7461,-112.3155],[37.2245,-112.6836],[37.2131,-112.8861],[37.1888,-112.9881],[37.1889,-113.0263]],
     timeline:['Pack up the tipi slowly — short drive today','Drive through Red Canyon (scenic shortcut on UT-12)','South on US-89 then west on UT-9 into Zion','Stop at the Zion-Mt Carmel Tunnel viewpoints','3/4 day in Zion — Canyon Overlook (1 mi) or shuttle in','Check into the Orderville Airbnb after 4 PM','Run a load of laundry — washer + dryer onsite','Dinner in Springdale'],
     lodging:{name:'Orderville Airbnb (Night 1 of 2)', meta:'245 W Pinyon Pine Dr · washer + dryer · BOOKED'},
-    food:{name:'Dinner in Springdale', meta:"Oscar's Cafe or King's Landing"},
+    food:{name:'Grilled Chicken & Veggies on Rice/Corn (Greek marinade)', meta:'Cook at the Orderville Airbnb'},
     suggestions:[
       {tag:'View',text:'<strong>Canyon Overlook Trail</strong> — 1 mi RT, easy, absurd view of Zion Canyon.'},
       {tag:'Tunnel',text:'The <strong>Zion-Mt Carmel Tunnel</strong> is an experience. Windows blast-cut into sandstone.'},
@@ -526,7 +527,7 @@ const DAYS = [
     route:[[37.1889,-113.0263],[37.2001,-112.9875],[37.2859,-112.9470],[37.1889,-113.0263]],
     timeline:['Shuttle into the canyon (cars not allowed)','Big hike of the day — Narrows (wet, magical) OR Angels Landing (airy, legendary)','Lunch at Zion Lodge','Afternoon: Weeping Rock or Emerald Pools (easier)','Sunset watch from the Airbnb deck in Orderville'],
     lodging:{name:'Orderville Airbnb (Night 2 of 2)', meta:'245 W Pinyon Pine Dr · washer + dryer · BOOKED'},
-    food:{name:'Picnic in the park + dinner out', meta:'~$50 total'},
+    food:{name:'Turkey Burgers for dinner', meta:'Picnic lunch in the park · cook at the Airbnb'},
     suggestions:[
       {tag:'Narrows',text:"Rent <strong>canyoneering boots + dry pants</strong> from Zion Outfitter ($30). Start early. Go until you're happy, turn back."},
       {tag:'Shuttle',text:'Shuttles run every 7 min. First one leaves ~6 AM. Be on it.'},
@@ -550,13 +551,13 @@ const DAYS = [
     ],
     protip:"You'll gain an hour crossing into Pacific Time today. Use it well."},
 
-  {n:13, date:'Thu, Jun 11', title:'Sequoia National Park', subroute:'Kernville → Generals Hwy → Yosemite area',
-    miles:'230', drive:'~5 hrs + park', sleep:'Car camp near Yosemite',
-    // Kernville → Three Rivers → Giant Forest (Sequoia) → back out → Fresno → Oakhurst
-    route:[[35.7550,-118.4239],[36.4383,-118.9012],[36.5655,-118.7673],[36.7468,-119.7726],[37.3272,-119.6463]],
-    timeline:['Morning drive up from Kernville to Sequoia entrance','Walk among the giants — General Sherman Tree','Congress Trail (2 mi, easy loop)','Lunch picnic in Giant Forest','Descend out, drive north via Fresno to Yosemite area (Oakhurst/Mariposa)','Set up camp at dusk'],
-    lodging:{name:'Car camp near Yosemite', meta:'National forest land (free/$15)'},
-    food:{name:'Picnic lunch + camp dinner', meta:'~$20 total'},
+  {n:13, date:'Thu, Jun 11', title:'Sequoia → Yosemite (Curry Village)', subroute:'Generals Hwy → CA-41 → Yosemite Valley',
+    miles:'170', drive:'3h 30m + park', sleep:'Curry Village Tent',
+    // Kernville → Three Rivers → Giant Forest (Sequoia) → Fresno → Curry Village (Yosemite Valley)
+    route:[[35.7550,-118.4239],[36.4383,-118.9012],[36.5655,-118.7673],[36.7468,-119.7726],[37.7402,-119.5732]],
+    timeline:['Chill morning, no timed entry','Walk among the giants — General Sherman Tree','Congress Trail (2 mi, easy loop)','Lunch picnic in Giant Forest','3h 30m drive Sequoia → Yosemite Valley','Check into Curry Village Tent — dinner + rest'],
+    lodging:{name:'Curry Village Tent', meta:'Yosemite Valley · $214.98 · Itin #10005I4LG · BOOKED'},
+    food:{name:'Picnic lunch + Curry Village dinner', meta:'~$30 total'},
     suggestions:[
       {tag:'See',text:'<strong>General Sherman</strong> — the largest tree on Earth by volume. The reality is bigger than photos.'},
       {tag:'Walk',text:'<strong>Congress Trail</strong> loops through a grove of giants. 2 mi of pure silence and scale.'},
@@ -565,13 +566,13 @@ const DAYS = [
     ],
     protip:'Moro Rock (400 steps up a granite dome) is a 20-min round trip with a panoramic view that earns the climb.'},
 
-  {n:14, date:'Fri, Jun 12', title:'Yosemite National Park', subroute:'Into the valley',
-    miles:'~60', drive:'in park', sleep:'Car camp',
-    // Camp → Yosemite Valley → Tunnel View → Glacier Point area → back
-    route:[[37.3272,-119.6463],[37.7499,-119.6453],[37.7155,-119.6773],[37.8651,-119.5383],[37.3272,-119.6463]],
-    timeline:['Dawn drive into Yosemite Valley','Tunnel View pullout (the classic shot)','Mist Trail to Vernal Falls (3 mi RT, wet!)','Lunch at Curry Village / Yosemite Valley Lodge','Lower Yosemite Falls (easy, 1 mi)','Sunset at Glacier Point or Taft Point (if Glacier Rd is open)'],
-    lodging:{name:'Same camp', meta:'Free/$15'},
-    food:{name:'Lodge lunch + camp dinner', meta:'~$30 total'},
+  {n:14, date:'Fri, Jun 12', title:'Yosemite Day → Sonora', subroute:'Big hikes in the Valley → 2h to Sonora',
+    miles:'~135', drive:'in park + 2h drive out', sleep:'Historic Sonora Inn',
+    // Curry Village → Valley → Tunnel View → exit via CA-120 W to Sonora
+    route:[[37.7402,-119.5732],[37.7155,-119.6773],[37.7499,-119.6453],[37.9840,-120.3822]],
+    timeline:['Upper Yosemite Hike — 7 mi, 2,700 ft, do it EARLY (gets hot)','Lower Yosemite Falls (easy, 1 mi)','Eagle Peak option','Tunnel View pullout (the classic shot)','2h drive (~75 mi) Curry Village → Sonora','Check into Historic Sonora Inn'],
+    lodging:{name:'Historic Sonora Inn', meta:"160 S Washington St · Anne's pts · Trip ID 1018360640 · BOOKED"},
+    food:{name:'Valley lunch + Sonora dinner', meta:'~$40 total'},
     suggestions:[
       {tag:'Reserve',text:'Yosemite needs a <strong>reservation to enter</strong> in peak season — check nps.gov/yose before the trip.'},
       {tag:'View',text:'<strong>Tunnel View</strong> — Half Dome, El Capitan, Bridalveil Fall in one frame. Must stop.'},
@@ -580,26 +581,26 @@ const DAYS = [
     ],
     protip:'Tioga Pass (highway 120) may still be closed in early June from winter snow. Check caltrans.ca.gov.'},
 
-  {n:15, date:'Sat, Jun 13', title:'Yosemite → Lake Tahoe', subroute:'CA-49 N → US-50 → Tahoe (around Sierra)',
-    miles:'230', drive:'~5 hrs', sleep:'Hipcamp',
-    // Camp → Mariposa → Jackson → Placerville → South Lake Tahoe → Sand Harbor area
-    route:[[37.3272,-119.6463],[37.4849,-119.9663],[38.3488,-120.7741],[38.7296,-120.7983],[38.9399,-119.9772],[39.0968,-120.0324]],
-    timeline:['Morning hike or Valley loop','Pack up camp, drive north via CA-49 through Gold Country','US-50 east over Echo Summit','Drop into South Lake Tahoe — lake views begin','Arrive Tahoe mid-afternoon','Swim/dip in the lake — it\'s cold and perfect'],
-    lodging:{name:'Hipcamp Tahoe', meta:'$47.70 · BOOKED'},
-    food:{name:'Lakeside dinner', meta:'~$30 each'},
+  {n:15, date:'Sat, Jun 13', title:'Sonora → Folsom Lake', subroute:'CA-108 → CA-49 → Folsom Lake SRA',
+    miles:'100', drive:'2h 30m', sleep:'Folsom Lake SRA campground',
+    // Sonora → Jackson → Folsom Lake (Peninsula Campground)
+    route:[[37.9840,-120.3822],[38.3488,-120.7741],[38.7297,-121.0935]],
+    timeline:['Slow breakfast at the Sonora Inn','Drive north via CA-49 through Gold Country','2h 30m, ~100 mi to Folsom Lake','Set up at Peninsula Campground (site 016)','Swim, paddle, recover'],
+    lodging:{name:'Folsom Lake SRA · Peninsula Campground', meta:'Site 016 · $41.25 · Conf #29523074 · BOOKED'},
+    food:{name:'Camp dinner by the water', meta:'~$25 total'},
     suggestions:[
-      {tag:'Pass',text:'If <strong>Tioga Pass (120)</strong> is open, take it for a shortcut — Tuolumne Meadows is a cathedral. Otherwise go around via 49/50.'},
-      {tag:'Swim',text:'<strong>Sand Harbor</strong> on the Nevada side — clearest turquoise water, white sand, granite boulders.'},
-      {tag:'Drive',text:'The <strong>East Shore</strong> (Hwy 28) is the prettiest Tahoe drive — pull over often.'},
-      {tag:'Stars',text:'Away from town lights, Tahoe nights = full Milky Way.'}
+      {tag:'Stop',text:'<strong>Jackson</strong> or <strong>Sutter Creek</strong> on CA-49 — Gold Rush downtowns, good for a coffee or lunch stop.'},
+      {tag:'Swim',text:'Folsom Lake warms up in June — perfect afternoon swim after the drive.'},
+      {tag:'Site',text:'Peninsula Campground sits on a quiet finger of the lake — less crowded than the main day-use areas.'},
+      {tag:'Stars',text:'Far enough from Sacramento light for a decent night sky.'}
     ],
-    protip:"Tahoe is 6,200 ft — if you're still acclimatizing from Yosemite, the altitude is easy. If coming from sea level, go slow."},
+    protip:'Folsom Lake is only ~30 min from SF tomorrow — sleep in, then a short, easy drive into the city.'},
 
-  {n:16, date:'Sun, Jun 14', title:'Tahoe → San Francisco', subroute:'US-50 W → I-80 W → Bay Bridge',
-    miles:'194', drive:'~3.5 hrs', sleep:"Cousin's home",
-    // Tahoe → Placerville → Sacramento → Davis → Vallejo → SF
-    route:[[39.0968,-120.0324],[38.7296,-120.7983],[38.5816,-121.4944],[38.5449,-121.7405],[38.1041,-122.2566],[37.7749,-122.4194]],
-    timeline:['Lazy morning by the lake','US-50 W down the western Sierra','Stop in Sacramento or Davis for coffee','I-80 W to the Bay','Cross the Bay Bridge — emotional moment','Arrive SF afternoon','Dinner with cousins'],
+  {n:16, date:'Sun, Jun 14', title:'Folsom Lake → San Francisco', subroute:'I-80 W → Bay Bridge',
+    miles:'134', drive:'2h 30m', sleep:"Cousin's home",
+    // Folsom Lake → Sacramento → Davis → Vallejo → SF
+    route:[[38.7297,-121.0935],[38.5816,-121.4944],[38.5449,-121.7405],[38.1041,-122.2566],[37.7749,-122.4194]],
+    timeline:['Lazy morning by the lake','Pack up camp','I-80 W to the Bay (2h 30m, 134 mi)','Stop in Davis for coffee if early','Cross the Bay Bridge — emotional moment','Arrive SF afternoon','Dinner with cousins'],
     lodging:{name:"Cousin's home", meta:'San Francisco · Free'},
     food:{name:'Dinner with family', meta:'Free'},
     suggestions:[
@@ -643,11 +644,11 @@ const DAYS = [
 // ================= LODGING (per-night detail from spreadsheet) =================
 const LODGING = [
   {night:0, dayNum:0, date:'Fri, May 29', city:'Hamilton, NY',          name:"Grandparents' house",                  type:'bed',       cost:0,      address:'Hamilton, NY',                                              booked:'Family',                  notes:'Welcome Ruby!'},
-  {night:1, dayNum:1, date:'Sat, May 30', city:'Sandusky, OH',          name:'Hotel TBD · Sandusky',                 type:'hotel',     cost:0,      address:'Sandusky, OH',                                              booked:'To be booked',            notes:'Need a hotel — no longer car camping first night'},
+  {night:1, dayNum:1, date:'Sat, May 30', city:'Ridgeville, OH',        name:'Motel 6',                              type:'motel',     cost:74,     address:'Ridgeville, OH',                                            booked:'BOOKED',                  notes:'Stop after Mekong Vietnamese dinner in Sandusky'},
   {night:2, dayNum:2, date:'Sun, May 31', city:'Madison, WI',           name:"Gwen's Apartment",                     type:'bed',       cost:0,      address:'Madison, WI',                                               booked:'Family · Night 1 of 2',   notes:''},
   {night:3, dayNum:3, date:'Mon, Jun 1',  city:'Madison, WI',           name:"Gwen's Apartment",                     type:'bed',       cost:0,      address:'Madison, WI',                                               booked:'Family · Night 2 of 2',   notes:''},
-  {night:4, dayNum:4, date:'Tue, Jun 2',  city:'Sanford / Chamberlain, SD', name:'Hotel TBD · Sanford, SD',          type:'hotel',     cost:0,      address:'Sanford, SD',                                               booked:'To be booked',            notes:'Plans switched from hospital lot car-camp to a hotel — find one'},
-  {night:5, dayNum:5, date:'Wed, Jun 3',  city:'Lusk, WY',              name:'Covered Wagon Motel',                  type:'hotel',     cost:0,      address:'730 S Main Street, Lusk, WY 82225',                         booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306395 · Conf #2439839733', link:'http://www.coveredwagonmotel.com/'},
+  {night:4, dayNum:4, date:'Tue, Jun 2',  city:'Chamberlain, SD',       name:'AmericInn by Wyndham Chamberlain',     type:'hotel',     cost:0,      address:'1981 East King St, Chamberlain, SD 57325',                  booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1018360035 · Conf #2474000145'},
+  {night:5, dayNum:5, date:'Wed, Jun 3',  city:'Lusk, WY',              name:'Covered Wagon Motel',                  type:'hotel',     cost:15,     address:'730 S Main Street, Lusk, WY 82225',                         booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306395 · Conf #2439839733', link:'http://www.coveredwagonmotel.com/'},
   {night:6, dayNum:6, date:'Thu, Jun 4',  city:'Moab, UT',              name:'Home in Moab (Airbnb)',                type:'airbnb',    cost:288.79, costTotal:577.58, address:'1415 N Main St, Moab, UT 84532',         booked:'BOOKED · Night 1 of 2',   notes:'Total $577.58 split with Vamsi · Vamsi paid his portion ($310.84)'},
   {night:7, dayNum:7, date:'Fri, Jun 5',  city:'Moab, UT',              name:'Home in Moab (Airbnb)',                type:'airbnb',    cost:0,                          address:'1415 N Main St, Moab, UT 84532',         booked:'BOOKED · Night 2 of 2',   notes:'Same place'},
   {night:8, dayNum:8, date:'Sat, Jun 6',  city:'Bryce Canyon, UT',      name:"Tipi @ Ruby's Inn & Campgrounds",      type:'tipi',      cost:51.53,  costTotal:128.82, address:'300 S Main St, Bryce Canyon City, UT 84764',                booked:'BOOKED · Night 1 of 2',   confirmation:'Reservation Code A5XC6A · booked by Vamsi', notes:'Showers onsite · sleeping bags available for rent', link:'https://www.rubysinn.com/'},
@@ -655,9 +656,9 @@ const LODGING = [
   {night:10,dayNum:10,date:'Mon, Jun 8',  city:'Orderville, UT',        name:'Zion Airbnb (Orderville)',             type:'airbnb',    cost:332.89, costTotal:665.77, address:'245 W Pinyon Pine Drive, Orderville, UT 84758', booked:'BOOKED · Night 1 of 2', notes:'Washer + dryer onsite · Vamsi paid his portion'},
   {night:11,dayNum:11,date:'Tue, Jun 9',  city:'Orderville, UT',        name:'Zion Airbnb (Orderville)',             type:'airbnb',    cost:0,                          address:'245 W Pinyon Pine Drive, Orderville, UT 84758', booked:'BOOKED · Night 2 of 2', notes:'Same place'},
   {night:12,dayNum:12,date:'Wed, Jun 10', city:'Kernville, CA',         name:'Whispering Pines Lodge',               type:'hotel',     cost:0,      address:'13745 Sierra Way, Kernville, CA 93238',                     booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1016306698 · Conf #2439844351', link:'https://www.pineskernville.com/'},
-  {night:13,dayNum:13,date:'Thu, Jun 11', city:'Yosemite area, CA',     name:'Car camp near Yosemite',               type:'car camp',  cost:30,     address:'National forest / dispersed',                               booked:'Not yet · book ahead',    notes:'Yosemite area packs early in summer'},
-  {night:14,dayNum:14,date:'Fri, Jun 12', city:'Yosemite, CA',          name:'Car camp near Yosemite',               type:'car camp',  cost:30,     address:'National forest / dispersed',                               booked:'Not yet · book ahead'},
-  {night:15,dayNum:15,date:'Sat, Jun 13', city:'Lake Tahoe area, CA',   name:'Hipcamp · Foothill Ridge',             type:'hipcamp',   cost:47.70,  address:'~1 hr from Lake Tahoe, CA',                                 booked:'BOOKED',                  link:'https://www.hipcamp.com/en-US/land/california-foothill-ridge-pw1hjnrd'},
+  {night:13,dayNum:13,date:'Thu, Jun 11', city:'Yosemite, CA',          name:'Curry Village Tent',                   type:'tent cabin',cost:214.98, address:'Curry Village, Yosemite Valley, CA',                        booked:'BOOKED',                  confirmation:'Itinerary # 10005I4LG', link:'https://reservations.ahlsmsworld.com/Yosemite/Plan-Your-Trip/Itinerary-Updated'},
+  {night:14,dayNum:14,date:'Fri, Jun 12', city:'Sonora, CA',            name:'Historic Sonora Inn',                  type:'hotel',     cost:0,      address:'160 S Washington St, Sonora, CA 95370',                     booked:"BOOKED · Anne's pts",     confirmation:'Trip ID 1018360640 · Conf #2474009609'},
+  {night:15,dayNum:15,date:'Sat, Jun 13', city:'Folsom Lake, CA',       name:'Folsom Lake SRA · Peninsula Campground (site 016)', type:'car camp', cost:41.25, address:'Peninsula Campground, Folsom Lake SRA, CA',                booked:'BOOKED',                  confirmation:'Conf #29523074'},
   {night:16,dayNum:16,date:'Sun, Jun 14', city:'San Francisco, CA',     name:"Cousins' home",                         type:'bed',       cost:0,      address:'San Francisco, CA',                                         booked:'Family · Night 1 of 2'},
   {night:17,dayNum:17,date:'Mon, Jun 15', city:'San Francisco, CA',     name:"Cousins' home",                         type:'bed',       cost:0,      address:'San Francisco, CA',                                         booked:'Family · Night 2 of 2'}
 ];
@@ -692,9 +693,9 @@ const DAILY_FOOD = [
   {dayNum:11, location:'Zion',                           breakfast:4,  lunch:6,  dinner:20, snacks:8, total:38, notes:'Picnic in the park + dinner out'},
   {dayNum:12, location:'Zion → Sequoia',                 breakfast:4,  lunch:6,  dinner:15, snacks:8, total:33, notes:'Meal-prepped from Airbnb'},
   {dayNum:13, location:'Sequoia → Yosemite',             breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Picnic lunch in Giant Forest'},
-  {dayNum:14, location:'Yosemite',                       breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Lodge lunch + camp dinner'},
-  {dayNum:15, location:'Yosemite → Lake Tahoe',          breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Lakeside dinner'},
-  {dayNum:16, location:'Lake Tahoe → San Francisco',     breakfast:4,  lunch:10, dinner:0,  snacks:8, total:22, notes:'Dinner with cousins (free)'},
+  {dayNum:14, location:'Yosemite → Sonora',              breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Hot Valley hikes early · Sonora Inn dinner'},
+  {dayNum:15, location:'Sonora → Folsom Lake',           breakfast:4,  lunch:10, dinner:15, snacks:8, total:37, notes:'Camp dinner by the lake'},
+  {dayNum:16, location:'Folsom Lake → San Francisco',    breakfast:4,  lunch:10, dinner:0,  snacks:8, total:22, notes:'Dinner with cousins (free)'},
   {dayNum:17, location:'San Francisco',                  breakfast:4,  lunch:40, dinner:0,  snacks:8, total:52, notes:'All-day eating in SF'},
   {dayNum:18, location:'San Francisco (departure)',      breakfast:0,  lunch:0,  dinner:0,  snacks:0, total:0,  notes:'Airport coffee'}
 ];
@@ -708,12 +709,12 @@ const BUDGET_AUNT_RANGES = {
 };
 
 const BUDGET_TOTALS = {
-  food:        717,
+  food:        717.37,
   gas:         568.10,
   miscSetup:   221.59,
-  lodging:     780.90,
+  lodging:     1018.43,
   flights:     210,
-  grandTotal:  2497.59
+  grandTotal:  2735.49
 };
 
 const BUDGET_RUBY_PAID = [
@@ -754,9 +755,9 @@ const BUDGET_GAS_BY_DAY = [
   {dayNum:11, route:'Zion full day in park',              miles:80,  gallons:2.5,  pricePerGal:3.80, cost:9.50},
   {dayNum:12, route:'Zion → Sequoia (+ Vegas drop)',      miles:544, gallons:17.0, pricePerGal:5.30, cost:90.10},
   {dayNum:13, route:'Sequoia → Yosemite + park',          miles:188, gallons:5.9,  pricePerGal:5.30, cost:31.30},
-  {dayNum:14, route:'Yosemite full day in park',          miles:100, gallons:3.1,  pricePerGal:5.30, cost:16.40},
-  {dayNum:15, route:'Yosemite → Tahoe',                   miles:236, gallons:7.4,  pricePerGal:5.30, cost:39.20},
-  {dayNum:16, route:'Tahoe → San Francisco',              miles:194, gallons:6.1,  pricePerGal:5.30, cost:32.30}
+  {dayNum:14, route:'Yosemite hikes + drive to Sonora',   miles:135, gallons:4.2,  pricePerGal:5.30, cost:22.30},
+  {dayNum:15, route:'Sonora → Folsom Lake',               miles:100, gallons:3.1,  pricePerGal:5.30, cost:16.40},
+  {dayNum:16, route:'Folsom Lake → San Francisco',        miles:134, gallons:4.2,  pricePerGal:5.30, cost:22.30}
 ];
 
 // ================= PODCASTS (for the Reading & Listening page) =================
@@ -824,7 +825,7 @@ const WEATHER = [
   {dayNum:12, date:'2026-06-10', location:'Kernville, CA',    high:'88–98°F', low:'58–66°F', note:'Dry heat. Can feel extremely hot in afternoon sun. River areas cooler.'},
   {dayNum:13, date:'2026-06-11', location:'Yosemite NP',      high:'75–88°F', low:'45–55°F', note:'Depends heavily on elevation. Valley warm in daytime, cool nights. Excellent camping weather overall.'},
   {dayNum:14, date:'2026-06-12', location:'Yosemite NP',      high:'76–89°F', low:'46–56°F', note:'Dry and sunny likely. Higher elevations MUCH colder.'},
-  {dayNum:15, date:'2026-06-13', location:'Lake Tahoe',       high:'68–78°F', low:'38–48°F', note:'Crisp mountain air. Nights surprisingly cold near the lake.'},
+  {dayNum:15, date:'2026-06-13', location:'Folsom Lake, CA',  high:'82–92°F', low:'58–66°F', note:'Sacramento Valley summer — warm days, mild nights. Lake makes the afternoon manageable.'},
   {dayNum:16, date:'2026-06-14', location:'San Francisco',    high:'60–68°F', low:'50–56°F', note:'Classic cool SF weather. Windy and cloudy possible even in June. Bring layers.'},
   {dayNum:17, date:'2026-06-15', location:'San Francisco',    high:'60–69°F', low:'51–57°F', note:'Similar — mornings/evenings chilly despite being California.'}
 ];

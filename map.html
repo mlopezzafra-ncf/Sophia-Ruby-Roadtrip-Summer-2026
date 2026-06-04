@@ -46,6 +46,23 @@
       <div id="mainMap"></div>
       <div class="map-legend" id="mapLegend"></div>
     </div>
+    <div class="photo-mfe" id="photoMfe">
+      <div class="photo-panel">
+        <h3>Trip Photos &amp; Videos</h3>
+        <form class="photo-form" id="photoUploadForm">
+          <input id="photoCaption" type="text" placeholder="Caption">
+          <input id="photoTakenBy" type="text" placeholder="Taken by">
+          <input id="photoLocation" type="text" placeholder="Location note">
+          <input id="photoFile" type="file" accept="image/*,video/*" required>
+          <button type="submit">Upload</button>
+        </form>
+        <div class="photo-status" id="photoStatus">AWS is not configured yet. Add your Lambda Function URL in js/aws-config.js.</div>
+      </div>
+      <div class="photo-panel">
+        <h3>Media on the map</h3>
+        <div class="photo-grid" id="photoGrid"></div>
+      </div>
+    </div>
   </div>
 </section><footer>
   <div class="script">Go slow, take pictures, stay weird.</div>
@@ -56,6 +73,7 @@
     <input type="file" id="importFile" accept=".json" style="display:none">
   </div>
 </footer><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/aws-config.js"></script>
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
 </body>

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initListening();
   initDays();
   initMap();
+  initPhotos();
   initBudget();
   initPacking();
   initLodgingTotalsOnDays(); // re-renders day lodging cells with full detail if present
@@ -20,6 +21,20 @@ function escapeHTML(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<'
 function storageGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
 function storageSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
 function fmtMoney(n){ if(n==null||isNaN(n)) return ''; return '$'+Number(n).toFixed(2).replace(/\.00$/,''); }
+const AWS_API_BASE = ((window.ROADTRIP_AWS && window.ROADTRIP_AWS.apiBaseUrl) || '').replace(/\/$/, '');
+function hasAwsApi(){ return Boolean(AWS_API_BASE); }
+async function awsFetch(path, options){
+  const resp = await fetch(`${AWS_API_BASE}${path}`, {
+    ...options,
+    headers:{'Content-Type':'application/json', ...(options && options.headers ? options.headers : {})},
+  });
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '');
+    throw new Error(text || `AWS request failed: ${resp.status}`);
+  }
+  if (resp.status === 204) return null;
+  return resp.json();
+}
 
 // Returns the 0-indexed trip day number for today, or null if pre/post-trip.
 // Trip starts 2026-05-29 (Day 0) and runs 19 days through 2026-06-16 (Day 18).
@@ -791,7 +806,7 @@ function toggleDay(n){
 }
 
 // ================= MAP =================
-let mainMap = null, currentLayer = null;
+let mainMap = null, currentLayer = null, photoLayer = null;
 const tileLayers = {
   street:{url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr:'© OpenStreetMap © CARTO', maxZoom:18},
   terrain:{url:'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attr:'© OpenStreetMap © OpenTopoMap', maxZoom:17},
@@ -844,6 +859,7 @@ function initMap(){
   });
 
   mainMap.fitBounds(L.latLngBounds(STOPS.map(s=>[s.lat,s.lng])),{padding:[40,40]});
+  photoLayer = L.layerGroup().addTo(mainMap);
 
   document.querySelectorAll('.map-tab').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -863,6 +879,136 @@ function initMap(){
     <span class="legend-chip"><span class="legend-dot" style="background:#6B4423;border-radius:0;width:20px;height:3px"></span>Ruby's flights</span>
     <span class="legend-chip" style="margin-left:auto;background:var(--paper);border:1px solid var(--wood)">Stops numbered in order · scroll to zoom</span>
   `;
+}
+
+// ================= MAP MEDIA MFE =================
+function initPhotos(){
+  const form = document.getElementById('photoUploadForm');
+  const grid = document.getElementById('photoGrid');
+  if (!form || !grid) return;
+  form.addEventListener('submit', uploadPhoto);
+  loadPhotos();
+}
+
+function setPhotoStatus(msg, isError){
+  const el = document.getElementById('photoStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('error', Boolean(isError));
+}
+
+async function getBrowserLocation(){
+  if (!navigator.geolocation) return {};
+  return new Promise(resolve => {
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracyMeters: Math.round(pos.coords.accuracy || 0)
+      }),
+      () => resolve({}),
+      {enableHighAccuracy:true, timeout:10000, maximumAge:60000}
+    );
+  });
+}
+
+async function loadPhotos(){
+  const grid = document.getElementById('photoGrid');
+  if (!grid) return;
+  if (!hasAwsApi()) {
+    grid.innerHTML = '<div class="empty-msg">Connect AWS to show uploaded media here.</div>';
+    return;
+  }
+  try {
+    const data = await awsFetch('/photos');
+    const photos = data.photos || [];
+    renderPhotos(photos);
+    renderPhotoMarkers(photos);
+    setPhotoStatus(photos.length ? `${photos.length} media item${photos.length === 1 ? '' : 's'} loaded.` : 'No uploaded media yet.', false);
+  } catch (err) {
+    setPhotoStatus('Could not load media from AWS.', true);
+  }
+}
+
+function renderPhotos(photos){
+  const grid = document.getElementById('photoGrid');
+  if (!grid) return;
+  if (!photos.length) {
+    grid.innerHTML = '<div class="empty-msg">No uploaded media yet.</div>';
+    return;
+  }
+  grid.innerHTML = photos.map(p => {
+    const media = (p.contentType || '').startsWith('video/')
+      ? `<video src="${p.url}" controls preload="metadata"></video>`
+      : `<img src="${p.url}" alt="${escapeHTML(p.caption || p.fileName || 'Trip photo')}" loading="lazy">`;
+    return `<div class="photo-card">
+      <div class="photo-thumb">${media}</div>
+      <div class="photo-meta">
+        <strong>${escapeHTML(p.caption || p.fileName || 'Untitled')}</strong>
+        <span>${escapeHTML([p.takenBy, p.locationNote].filter(Boolean).join(' · ') || 'Road trip media')}</span>
+        <button onclick="deletePhoto('${escapeHTML(p.photoId)}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPhotoMarkers(photos){
+  if (!photoLayer) return;
+  photoLayer.clearLayers();
+  photos.filter(p => Number.isFinite(Number(p.lat)) && Number.isFinite(Number(p.lng))).forEach(p => {
+    const icon = L.divIcon({
+      className:'photo-marker',
+      html:'<div class="photo-pin">PHOTO</div>',
+      iconSize:[30,30],
+      iconAnchor:[15,30]
+    });
+    L.marker([Number(p.lat), Number(p.lng)], {icon, zIndexOffset:1200}).addTo(photoLayer)
+      .bindPopup(`<strong>${escapeHTML(p.caption || p.fileName || 'Trip media')}</strong><br><span>${escapeHTML(p.locationNote || '')}</span>`);
+  });
+}
+
+async function uploadPhoto(event){
+  event.preventDefault();
+  if (!hasAwsApi()) {
+    setPhotoStatus('Add your Lambda Function URL in js/aws-config.js before uploading.', true);
+    return;
+  }
+  const fileInput = document.getElementById('photoFile');
+  const file = fileInput && fileInput.files && fileInput.files[0];
+  if (!file) return;
+  setPhotoStatus('Getting location and upload URL...', false);
+  try {
+    const loc = await getBrowserLocation();
+    const payload = {
+      fileName: file.name,
+      contentType: file.type || 'application/octet-stream',
+      caption: document.getElementById('photoCaption').value.trim(),
+      takenBy: document.getElementById('photoTakenBy').value.trim(),
+      locationNote: document.getElementById('photoLocation').value.trim(),
+      ...loc
+    };
+    const signed = await awsFetch('/photos/presign', {method:'POST', body:JSON.stringify(payload)});
+    setPhotoStatus('Uploading to S3...', false);
+    const putResp = await fetch(signed.uploadUrl, {method:'PUT', headers:{'Content-Type':payload.contentType}, body:file});
+    if (!putResp.ok) throw new Error('S3 upload failed.');
+    await awsFetch('/photos/complete', {method:'POST', body:JSON.stringify({photoId:signed.photo.photoId})});
+    event.target.reset();
+    setPhotoStatus('Upload complete.', false);
+    loadPhotos();
+  } catch (err) {
+    setPhotoStatus(err.message || 'Upload failed.', true);
+  }
+}
+
+async function deletePhoto(photoId){
+  if (!hasAwsApi() || !photoId) return;
+  try {
+    await awsFetch(`/photos/${encodeURIComponent(photoId)}`, {method:'DELETE'});
+    setPhotoStatus('Media deleted.', false);
+    loadPhotos();
+  } catch (err) {
+    setPhotoStatus('Could not delete media.', true);
+  }
 }
 
 function switchLayer(key){
@@ -985,6 +1131,7 @@ function renderSpotifyFrame(dayNum,url){
 // ================= BUDGET =================
 function initBudget(){
   renderExpenses();
+  syncExpensesFromAws();
   const planned = document.getElementById('plannedBudget');
   if (planned) planned.textContent = '$' + Object.values(PLANNED).reduce((a,b)=>a+b,0).toFixed(0);
   renderAuntRanges();
@@ -1063,20 +1210,57 @@ function renderGasByDay(){
   if (miles) miles.textContent = totalMiles.toLocaleString();
   if (cost)  cost.textContent  = fmtMoney(totalCost);
 }
-function addExpense(){
-  const desc=document.getElementById('expDesc').value.trim(), cat=document.getElementById('expCat').value, amt=parseFloat(document.getElementById('expAmt').value);
+async function syncExpensesFromAws(){
+  if (!hasAwsApi() || !document.getElementById('expenseList')) return;
+  try {
+    const data = await awsFetch('/expenses');
+    if (Array.isArray(data.expenses)) {
+      storageSet('expenses', JSON.stringify(data.expenses));
+      renderExpenses();
+    }
+  } catch (err) {
+    // Keep the local copy visible if AWS is unavailable.
+  }
+}
+async function addExpense(){
+  const desc=document.getElementById('expDesc').value.trim(), cat=document.getElementById('expCat').value, paidBy=(document.getElementById('expPaidBy')||{}).value || '', amt=parseFloat(document.getElementById('expAmt').value);
   if (!desc||!amt||isNaN(amt)) return;
   const expenses=JSON.parse(storageGet('expenses')||'[]');
-  expenses.push({desc,cat,amt,ts:Date.now()});
+  const expense = {expenseId:`exp-${Date.now()}`, desc, cat, paidBy:paidBy.trim(), amt, ts:Date.now()};
+  expenses.push(expense);
   storageSet('expenses',JSON.stringify(expenses));
   document.getElementById('expDesc').value=''; document.getElementById('expAmt').value='';
+  const paidByEl = document.getElementById('expPaidBy');
+  if (paidByEl) paidByEl.value = '';
   renderExpenses();
+  if (hasAwsApi()) {
+    try {
+      const saved = await awsFetch('/expenses', {method:'POST', body:JSON.stringify(expense)});
+      const latest = JSON.parse(storageGet('expenses')||'[]');
+      const idx = latest.findIndex(e => e.expenseId === expense.expenseId);
+      if (idx >= 0 && saved.expense) {
+        latest[idx] = saved.expense;
+        storageSet('expenses', JSON.stringify(latest));
+        renderExpenses();
+      }
+    } catch (err) {
+      alert('Saved locally, but AWS did not accept the expense.');
+    }
+  }
 }
-function deleteExpense(idx){
+async function deleteExpense(idx){
   const expenses=JSON.parse(storageGet('expenses')||'[]');
+  const expense = expenses[idx];
   expenses.splice(idx,1);
   storageSet('expenses',JSON.stringify(expenses));
   renderExpenses();
+  if (hasAwsApi() && expense && expense.expenseId) {
+    try {
+      await awsFetch(`/expenses/${encodeURIComponent(expense.expenseId)}`, {method:'DELETE'});
+    } catch (err) {
+      alert('Deleted locally, but AWS did not delete the remote expense.');
+    }
+  }
 }
 function renderExpenses(){
   const list=document.getElementById('expenseList');
@@ -1086,7 +1270,7 @@ function renderExpenses(){
   else {
     list.innerHTML=expenses.slice().reverse().map((e,revIdx)=>{
       const i=expenses.length-1-revIdx;
-      return `<div class="expense-item"><span class="cat-pill cat-${e.cat}">${e.cat}</span><span>${escapeHTML(e.desc)}</span><span class="amount">$${e.amt.toFixed(2)}</span><button onclick="deleteExpense(${i})" title="Remove">×</button></div>`;
+      return `<div class="expense-item"><span class="cat-pill cat-${e.cat}">${e.cat}</span><span>${escapeHTML(e.desc)}${e.paidBy ? `<small>Paid by ${escapeHTML(e.paidBy)}</small>` : ''}</span><span class="amount">$${Number(e.amt).toFixed(2)}</span><button onclick="deleteExpense(${i})" title="Remove">×</button></div>`;
     }).join('');
   }
   const total=expenses.reduce((s,e)=>s+e.amt,0);
